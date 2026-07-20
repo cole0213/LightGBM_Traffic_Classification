@@ -1,0 +1,95 @@
+{
+  "trained_at": "2026-07-10 02:49:40",
+  "n_sessions": 652059,
+  "n_classes": 81,
+  "dropped_classes": {
+    "msmpeng.exe": 4,
+    "taskhostw.exe": 4,
+    "CrossDeviceService": 4,
+    "Game_Bar": 3,
+    "SocketLogger.exe": 3,
+    "SystemSettings.exe": 3,
+    "Dwarf_Axe": 3,
+    "CrossDeviceResume.exe": 3,
+    "Windows_Subsystem_for_Linux": 2,
+    "NVDisplay.Container.exe": 2,
+    "WmiPrvSE.exe": 2,
+    "GameBarPresenceWriter.exe": 2,
+    "AdobeGCClient": 2,
+    "vgc.exe": 1,
+    "League of Legends.exe": 1,
+    "omadmclient.exe": 1,
+    "ALPDF": 1,
+    "AYUpdSrv.exe": 1,
+    "Wireshark": 1,
+    "HncUpdateService": 1,
+    "Wondershare_Studio": 1,
+    "PowerToys": 1,
+    "smartscreen.exe": 1,
+    "desktopcal.exe": 1,
+    "HPPrinterHealthMonitor": 1,
+    "acrotray.exe": 1
+  },
+  "best_iteration": 500,
+  "params": {
+    "objective": "multiclass",
+    "metric": "multi_error",
+    "n_estimators": 500,
+    "learning_rate": 0.05,
+    "num_leaves": 63,
+    "min_child_samples": 50,
+    "colsample_bytree": 0.8,
+    "reg_lambda": 10,
+    "min_sum_hessian_in_leaf": 5,
+    "cat_smooth": 100,
+    "cat_l2": 50,
+    "max_cat_threshold": 32,
+    "verbosity": -1,
+    "random_state": 42
+  },
+  "denoise": false,
+  "group": false,
+  "smooth": false,
+  "rules": false,
+  "train_csvs": [
+    "/root/lab_dashboard/static/datasets/lab0630/session_stat_lab0630.csv",
+    "/root/lab_dashboard/static/datasets/lab0702_auto/session_stat_lab0702_auto.csv",
+    "/root/lab_dashboard/static/datasets/lab0703_auto/session_stat_lab0703_auto.csv",
+    "/root/lab_dashboard/static/datasets/lab0704_auto/session_stat_lab0704_auto.csv",
+    "/root/lab_dashboard/static/datasets/lab0705_auto/session_stat_lab0705_auto.csv"
+  ],
+  "truth_specs": [
+    {
+      "path": "/root/lab_dashboard/static/datasets/lab0630/session_stat_lab0630.csv",
+      "truth_col": "task3",
+      "sessions": 134960,
+      "classes": 89
+    },
+    {
+      "path": "/root/lab_dashboard/static/datasets/lab0702_auto/session_stat_lab0702_auto.csv",
+      "truth_col": "task3",
+      "sessions": 137599,
+      "classes": 46
+    },
+    {
+      "path": "/root/lab_dashboard/static/datasets/lab0703_auto/session_stat_lab0703_auto.csv",
+      "truth_col": "task3",
+      "sessions": 143967,
+      "classes": 45
+    },
+    {
+      "path": "/root/lab_dashboard/static/datasets/lab0704_auto/session_stat_lab0704_auto.csv",
+      "truth_col": "task3",
+      "sessions": 124437,
+      "classes": 47
+    },
+    {
+      "path": "/root/lab_dashboard/static/datasets/lab0705_auto/session_stat_lab0705_auto.csv",
+      "truth_col": "task3",
+      "sessions": 111146,
+      "classes": 42
+    }
+  ],
+  "source_sessions": 652109,
+  "source_classes": 107
+}

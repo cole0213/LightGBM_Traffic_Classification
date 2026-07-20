@@ -1,0 +1,46 @@
+{
+  "dataset": "lab_1205feat",
+  "n_features": 1205,
+  "results": [
+    {
+      "model": "LightGBM",
+      "top1": 90.23,
+      "top3": 98.87,
+      "train_s": 1706.6,
+      "peak_MB": 2058,
+      "size_MB": 126.9
+    },
+    {
+      "model": "XGBoost",
+      "top1": 90.22,
+      "top3": 98.82,
+      "train_s": 4309.2,
+      "peak_MB": 1305,
+      "size_MB": 33.7
+    },
+    {
+      "model": "RandomForest",
+      "top1": 87.51,
+      "top3": 97.64,
+      "train_s": 88.7,
+      "peak_MB": 1251,
+      "size_MB": 112.9
+    },
+    {
+      "model": "DecisionTree",
+      "top1": 84.35,
+      "top3": 88.24,
+      "train_s": 150.1,
+      "peak_MB": 0,
+      "size_MB": 10.3
+    },
+    {
+      "model": "MLP(neural)",
+      "top1": 82.56,
+      "top3": 95.8,
+      "train_s": 48.3,
+      "peak_MB": 10,
+      "size_MB": 4.2
+    }
+  ]
+}

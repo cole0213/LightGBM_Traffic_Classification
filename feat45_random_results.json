@@ -1,0 +1,82 @@
+{
+  "protocol": "random80/20 stratified",
+  "days": [
+    "0711",
+    "0712",
+    "0713",
+    "0714"
+  ],
+  "n_features": 45,
+  "results": [
+    {
+      "model": "LightGBM",
+      "top1": 85.35,
+      "top3": 96.91,
+      "macroF1": 48.01,
+      "ECE": 6.06,
+      "acc@0.5": 87.09,
+      "cov@0.5": 96.66,
+      "acc@0.8": 92.3,
+      "cov@0.8": 83.46,
+      "train_s": 139.8,
+      "peak_MB": 575,
+      "size_MB": 191.9
+    },
+    {
+      "model": "XGBoost",
+      "top1": 85.34,
+      "top3": 96.87,
+      "macroF1": 48.72,
+      "ECE": 6.46,
+      "acc@0.5": 87.01,
+      "cov@0.5": 96.83,
+      "acc@0.8": 92.0,
+      "cov@0.8": 84.15,
+      "train_s": 234.1,
+      "peak_MB": 838,
+      "size_MB": 241.8
+    },
+    {
+      "model": "RandomForest",
+      "top1": 84.16,
+      "top3": 96.27,
+      "macroF1": 47.77,
+      "ECE": 4.8,
+      "acc@0.5": 89.71,
+      "cov@0.5": 86.73,
+      "acc@0.8": 96.15,
+      "cov@0.8": 59.42,
+      "train_s": 13.4,
+      "peak_MB": 3843,
+      "size_MB": 195.8
+    },
+    {
+      "model": "MLP(neural)",
+      "top1": 78.68,
+      "top3": 94.33,
+      "macroF1": 36.82,
+      "ECE": 1.61,
+      "acc@0.5": 84.51,
+      "cov@0.5": 87.07,
+      "acc@0.8": 92.87,
+      "cov@0.8": 60.14,
+      "train_s": 40.9,
+      "peak_MB": 10,
+      "size_MB": 0.7
+    },
+    {
+      "model": "DecisionTree",
+      "top1": 77.73,
+      "top3": 77.74,
+      "macroF1": 41.32,
+      "ECE": 22.27,
+      "acc@0.5": 77.73,
+      "cov@0.5": 100.0,
+      "acc@0.8": 77.73,
+      "cov@0.8": 100.0,
+      "train_s": 3.4,
+      "peak_MB": 0,
+      "size_MB": 29.7
+    }
+  ]
+}

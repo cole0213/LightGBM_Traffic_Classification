@@ -1,0 +1,396 @@
+{
+  "csv": "Z:\\nmlab\\99_sgs\\lab_dashboard\\static\\datasets\\lab0701_auto\\session_stat_lab0701_auto.csv",
+  "true_col": "task3_folder",
+  "threshold": 0.5,
+  "old": {
+    "model_path": "Z:\\nmlab\\99_sgs\\lab_dashboard\\models\\autolabel_model.pkl",
+    "classes": 83,
+    "meta": {
+      "trained_at": "2026-07-06 12:59:48",
+      "n_sessions": 262652,
+      "n_classes": 83,
+      "dropped_classes": {
+        "Windows_Subsystem_for_Linux": 4,
+        "Office_Push_Notifications_Utility": 4,
+        "smartscreen.exe": 4,
+        "HPPrinterHealthMonitor": 4,
+        "mysqld.exe": 4,
+        "WmiPrvSE.exe": 4,
+        "mstsc.exe": 3,
+        "NVDisplay.Container.exe": 3,
+        "BackgroundTransferHost.exe": 3,
+        "Antigravity.exe": 3,
+        "Update.exe": 2,
+        "desktopcal.exe": 2,
+        "AdobeGCClient": 2,
+        "Microsoft_Edge": 1,
+        "OneDriveLauncher.exe": 1,
+        "Photos.exe": 1,
+        "Python": 1,
+        "LGHUB_Updater": 1,
+        "cefproczf.exe": 1,
+        "CompatTelRunner.exe": 1,
+        "cowork-svc.exe": 1,
+        "HPPrintScanDoctorService.exe": 1,
+        "Intel_R_Dynamic_Application_Loader_Host_Interface": 1,
+        "rufus-4.14.exe": 1,
+        "SoftLandingTask.exe": 1,
+        "spoolsv.exe": 1,
+        "SppExtComObj.Exe": 1,
+        "omadmclient.exe": 1,
+        "ALPDF": 1,
+        "AYUpdSrv.exe": 1,
+        "vgc.exe": 1,
+        "Wireshark": 1,
+        "PowerToys": 1
+      },
+      "best_iteration": 463,
+      "params": {
+        "objective": "multiclass",
+        "metric": "multi_error",
+        "n_estimators": 500,
+        "learning_rate": 0.05,
+        "num_leaves": 63,
+        "min_child_samples": 50,
+        "colsample_bytree": 0.8,
+        "reg_lambda": 10,
+        "min_sum_hessian_in_leaf": 5,
+        "cat_smooth": 100,
+        "cat_l2": 50,
+        "max_cat_threshold": 32,
+        "verbosity": -1,
+        "random_state": 42
+      },
+      "train_csvs": [
+        "V:\\nmlab\\99_sgs\\lab_dashboard\\static\\datasets\\lab0629\\session_stat_lab0629.csv",
+        "V:\\nmlab\\99_sgs\\lab_dashboard\\static\\datasets\\lab0630\\session_stat_lab0630.csv"
+      ],
+      "eval_metrics": {
+        "train_csv": "V:\\nmlab\\99_sgs\\lab_dashboard\\static\\datasets\\lab0629\\session_stat_lab0629.csv",
+        "test_csv": "V:\\nmlab\\99_sgs\\lab_dashboard\\static\\datasets\\lab0630\\session_stat_lab0630.csv",
+        "n_train": 127754,
+        "n_test": 134960,
+        "acc_majority": 0.34322021339656195,
+        "acc_lookup": 0.7686203319502075,
+        "acc_ml": 0.8318168346176645,
+        "acc_ml_top3": 0.9662344398340249,
+        "macro_f1": 0.33496965023330133,
+        "weighted_f1": 0.826961368432856,
+        "seen_class_ceiling": 0.9995850622406639,
+        "quick": false
+      }
+    },
+    "threshold": 0.5,
+    "elapsed_sec": 50.28,
+    "total": 117336,
+    "exact_agree": 97005,
+    "exact_agree_pct": 82.67,
+    "normalized_agree": 97041,
+    "normalized_agree_pct": 82.7,
+    "normalized_agree_excluding_unknown_pct": 86.14,
+    "unknown": 4685,
+    "unknown_pct": 3.99,
+    "mean_conf": 0.8756,
+    "median_conf": 0.9479,
+    "p10_conf": 0.6086,
+    "p90_conf": 0.9983,
+    "top_mismatches": [
+      {
+        "true": "svchost.exe",
+        "pred": "chrome.exe",
+        "n": 2147
+      },
+      {
+        "true": "svchost.exe",
+        "pred": "Notion",
+        "n": 1339
+      },
+      {
+        "true": "svchost.exe",
+        "pred": "Visual_Studio",
+        "n": 1148
+      },
+      {
+        "true": "chrome.exe",
+        "pred": "미분류(자동)",
+        "n": 915
+      },
+      {
+        "true": "chrome.exe",
+        "pred": "svchost.exe",
+        "n": 756
+      },
+      {
+        "true": "svchost.exe",
+        "pred": "미분류(자동)",
+        "n": 732
+      },
+      {
+        "true": "Codex.exe",
+        "pred": "미분류(자동)",
+        "n": 634
+      },
+      {
+        "true": "chrome.exe",
+        "pred": "Codex.exe",
+        "n": 592
+      },
+      {
+        "true": "Notion",
+        "pred": "svchost.exe",
+        "n": 538
+      },
+      {
+        "true": "Codex.exe",
+        "pred": "svchost.exe",
+        "n": 475
+      },
+      {
+        "true": "msedgewebview2.exe",
+        "pred": "미분류(자동)",
+        "n": 460
+      },
+      {
+        "true": "Visual_Studio",
+        "pred": "svchost.exe",
+        "n": 431
+      },
+      {
+        "true": "Codex.exe",
+        "pred": "chrome.exe",
+        "n": 369
+      },
+      {
+        "true": "msedgewebview2.exe",
+        "pred": "chrome.exe",
+        "n": 341
+      },
+      {
+        "true": "svchost.exe",
+        "pred": "Codex.exe",
+        "n": 325
+      },
+      {
+        "true": "NVIDIA_App",
+        "pred": "svchost.exe",
+        "n": 308
+      },
+      {
+        "true": "msedge.exe",
+        "pred": "chrome.exe",
+        "n": 296
+      },
+      {
+        "true": "msedgewebview2.exe",
+        "pred": "svchost.exe",
+        "n": 287
+      },
+      {
+        "true": "Visual_Studio",
+        "pred": "미분류(자동)",
+        "n": 281
+      },
+      {
+        "true": "Claude",
+        "pred": "svchost.exe",
+        "n": 273
+      }
+    ]
+  },
+  "candidate": {
+    "model_path": "Z:\\nmlab\\99_sgs\\lab_dashboard\\models\\autolabel_model_candidate_0630_0704_balanced.pkl",
+    "classes": 90,
+    "meta": {
+      "trained_at": "2026-07-07 12:30:49",
+      "n_sessions": 50647,
+      "n_classes": 90,
+      "dropped_classes": {
+        "HncUpdateService": 4,
+        "opushutil.exe": 4,
+        "Game_Bar": 4,
+        "CrossDeviceService": 4,
+        "adobegcclient.exe": 3,
+        "CrossDeviceResume.exe": 3,
+        "Wireshark": 3,
+        "startmenuexperiencehost.exe": 3,
+        "clientcertcheck.exe": 3,
+        "Dwarf_Axe": 3,
+        "compattelrunner.exe": 3,
+        "SystemSettings.exe": 3,
+        "SocketLogger.exe": 3,
+        "lockapp.exe": 2,
+        "Adobe_Acrobat": 2,
+        "Windows_Subsystem_for_Linux": 2,
+        "GameBarPresenceWriter.exe": 2,
+        "desktopcal.exe": 2,
+        "gamebarpresencewriter.exe": 2,
+        "AdobeGCClient": 2,
+        "WmiPrvSE.exe": 2,
+        "crossdeviceservice.exe": 2,
+        "omadmclient.exe": 2,
+        "searchapp.exe": 2,
+        "tshark.exe": 2,
+        "NVDisplay.Container.exe": 2,
+        "Wondershare_Studio": 1,
+        "HPPrinterHealthMonitor": 1,
+        "ngm64.exe": 1,
+        "AYUpdSrv.exe": 1,
+        "acrocef.exe": 1,
+        "vgc.exe": 1,
+        "slack.exe": 1,
+        "systemsettings.exe": 1,
+        "League of Legends.exe": 1,
+        "PowerToys": 1,
+        "adobecollabsync.exe": 1,
+        "ALPDF": 1,
+        "cowork-svc.exe": 1,
+        "logioptionsplus_updater.exe": 1,
+        "smartscreen.exe": 1
+      },
+      "best_iteration": 346,
+      "params": {
+        "objective": "multiclass",
+        "metric": "multi_error",
+        "n_estimators": 500,
+        "learning_rate": 0.05,
+        "num_leaves": 63,
+        "min_child_samples": 50,
+        "colsample_bytree": 0.8,
+        "reg_lambda": 10,
+        "min_sum_hessian_in_leaf": 5,
+        "cat_smooth": 100,
+        "cat_l2": 50,
+        "max_cat_threshold": 32,
+        "verbosity": -1,
+        "random_state": 42
+      },
+      "train_csvs": [
+        "Z:\\nmlab\\99_sgs\\lab_dashboard\\static\\datasets\\lab0630\\session_stat_lab0630.csv",
+        "Z:\\nmlab\\99_sgs\\lab_dashboard\\static\\datasets\\lab0704\\session_stat_lab0704.csv"
+      ],
+      "balanced_sample": {
+        "per_class": 2000,
+        "source_sessions": 259397,
+        "sampled_sessions": 50731,
+        "source_classes": 131,
+        "sampled_classes": 131
+      }
+    },
+    "threshold": 0.5,
+    "elapsed_sec": 31.94,
+    "total": 117336,
+    "exact_agree": 41680,
+    "exact_agree_pct": 35.52,
+    "normalized_agree": 42667,
+    "normalized_agree_pct": 36.36,
+    "normalized_agree_excluding_unknown_pct": 50.35,
+    "unknown": 32602,
+    "unknown_pct": 27.79,
+    "mean_conf": 0.6792,
+    "median_conf": 0.7005,
+    "p10_conf": 0.3337,
+    "p90_conf": 0.9838,
+    "top_mismatches": [
+      {
+        "true": "chrome.exe",
+        "pred": "미분류(자동)",
+        "n": 16697
+      },
+      {
+        "true": "svchost.exe",
+        "pred": "미분류(자동)",
+        "n": 9827
+      },
+      {
+        "true": "svchost.exe",
+        "pred": "msedgewebview2.exe",
+        "n": 5861
+      },
+      {
+        "true": "svchost.exe",
+        "pred": "NVIDIA_App",
+        "n": 4959
+      },
+      {
+        "true": "chrome.exe",
+        "pred": "msedgewebview2.exe",
+        "n": 3121
+      },
+      {
+        "true": "chrome.exe",
+        "pred": "unknown",
+        "n": 1967
+      },
+      {
+        "true": "svchost.exe",
+        "pred": "Visual_Studio",
+        "n": 1639
+      },
+      {
+        "true": "svchost.exe",
+        "pred": "codex.exe",
+        "n": 1589
+      },
+      {
+        "true": "Codex.exe",
+        "pred": "미분류(자동)",
+        "n": 1318
+      },
+      {
+        "true": "Visual_Studio",
+        "pred": "Visual_Studio_Code",
+        "n": 1283
+      },
+      {
+        "true": "chrome.exe",
+        "pred": "msedge.exe",
+        "n": 1263
+      },
+      {
+        "true": "svchost.exe",
+        "pred": "Notion",
+        "n": 1198
+      },
+      {
+        "true": "svchost.exe",
+        "pred": "ChatGPT",
+        "n": 1012
+      },
+      {
+        "true": "Visual_Studio",
+        "pred": "미분류(자동)",
+        "n": 899
+      },
+      {
+        "true": "svchost.exe",
+        "pred": "Genspark_Claw",
+        "n": 851
+      },
+      {
+        "true": "System",
+        "pred": "Claude",
+        "n": 848
+      },
+      {
+        "true": "chrome.exe",
+        "pred": "Visual_Studio",
+        "n": 777
+      },
+      {
+        "true": "svchost.exe",
+        "pred": "Visual_Studio_Code",
+        "n": 772
+      },
+      {
+        "true": "System",
+        "pred": "미분류(자동)",
+        "n": 706
+      },
+      {
+        "true": "svchost.exe",
+        "pred": "Codex.exe",
+        "n": 671
+      }
+    ]
+  }
+}

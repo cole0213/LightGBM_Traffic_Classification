@@ -1,0 +1,36 @@
+{
+  "results": [
+    {
+      "model": "RandomForest",
+      "acc": 83.13,
+      "train_s": 16.6,
+      "infer_s": 6.2,
+      "peak_mem_MB": 1631,
+      "size_MB": 2404.2
+    },
+    {
+      "model": "DecisionTree",
+      "acc": 73.67,
+      "train_s": 7.9,
+      "infer_s": 0.1,
+      "peak_mem_MB": 51,
+      "size_MB": 55.3
+    },
+    {
+      "model": "LogisticReg",
+      "acc": 64.47,
+      "train_s": 40.6,
+      "infer_s": 0.2,
+      "peak_mem_MB": 275,
+      "size_MB": 0.0
+    },
+    {
+      "model": "MLP(neural)",
+      "acc": 76.0,
+      "train_s": 57.1,
+      "infer_s": 0.4,
+      "peak_mem_MB": 7,
+      "size_MB": 0.2
+    }
+  ]
+}

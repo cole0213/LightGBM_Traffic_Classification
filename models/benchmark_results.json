@@ -1,0 +1,47 @@
+[
+  {
+    "name": "LightGBM (Baseline)",
+    "train_time": 106.14438486099243,
+    "predict_time": 126.69181036949158,
+    "accuracy": 0.8877156200995432,
+    "top3_accuracy": 0.9396093270607486,
+    "macro_f1": 0.48729930941827004,
+    "weighted_f1": 0.8626497767544189
+  },
+  {
+    "name": "HistGradientBoosting (Sklearn)",
+    "train_time": 46.89141845703125,
+    "predict_time": 2.3060925006866455,
+    "accuracy": 0.7323924456262357,
+    "top3_accuracy": 0.8747869366605304,
+    "macro_f1": 0.23459310496119606,
+    "weighted_f1": 0.7454066178184076
+  },
+  {
+    "name": "RandomForest (Sklearn)",
+    "train_time": 16.620254278182983,
+    "predict_time": 4.424729585647583,
+    "accuracy": 0.8761505420331356,
+    "top3_accuracy": 0.9385184427626645,
+    "macro_f1": 0.5100358364115488,
+    "weighted_f1": 0.8507032321996487
+  },
+  {
+    "name": "ExtraTrees (Sklearn)",
+    "train_time": 6.359899044036865,
+    "predict_time": 3.473074197769165,
+    "accuracy": 0.8633496965978046,
+    "top3_accuracy": 0.9378451626099407,
+    "macro_f1": 0.47985293054344447,
+    "weighted_f1": 0.8361894968093422
+  },
+  {
+    "name": "LightGBM (Class Balanced)",
+    "train_time": 143.31374788284302,
+    "predict_time": 150.5304787158966,
+    "accuracy": 0.8407308924797163,
+    "top3_accuracy": 0.9370781345878503,
+    "macro_f1": 0.4836002939658303,
+    "weighted_f1": 0.8275911494628587
+  }
+]

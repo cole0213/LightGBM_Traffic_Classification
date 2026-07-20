@@ -1,0 +1,14 @@
+{
+ "train_csv": "V:\\nmlab\\99_sgs\\lab_dashboard\\static\\datasets\\lab0629\\session_stat_lab0629.csv",
+ "test_csv": "V:\\nmlab\\99_sgs\\lab_dashboard\\static\\datasets\\lab0630\\session_stat_lab0630.csv",
+ "n_train": 127754,
+ "n_test": 134960,
+ "acc_majority": 0.34322021339656195,
+ "acc_lookup": 0.7686203319502075,
+ "acc_ml": 0.6993701837581505,
+ "acc_ml_top3": 0.9071724955542383,
+ "macro_f1": 0.15150237288065882,
+ "weighted_f1": 0.7155946132761533,
+ "seen_class_ceiling": 0.9995850622406639,
+ "quick": true
+}

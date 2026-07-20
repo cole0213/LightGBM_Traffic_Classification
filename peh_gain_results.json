@@ -1,0 +1,139 @@
+{
+  "n_features": 1205,
+  "n_classes": 71,
+  "top30": [
+    {
+      "feat": "udp_checksum_hi",
+      "gain_pct": 8.094
+    },
+    {
+      "feat": "udp_checksum_lo",
+      "gain_pct": 3.241
+    },
+    {
+      "feat": "payload_Forward_5_IQR",
+      "gain_pct": 2.818
+    },
+    {
+      "feat": "ip_ttl",
+      "gain_pct": 2.187
+    },
+    {
+      "feat": "payload_Backward_All_Sum",
+      "gain_pct": 1.973
+    },
+    {
+      "feat": "ip_checksum_hi",
+      "gain_pct": 1.85
+    },
+    {
+      "feat": "iat_Backward_10_Q75",
+      "gain_pct": 1.779
+    },
+    {
+      "feat": "packet_sizes_Both_5_Q50",
+      "gain_pct": 1.741
+    },
+    {
+      "feat": "ip_id_hi",
+      "gain_pct": 1.693
+    },
+    {
+      "feat": "iat_Backward_10_Geo_Mean",
+      "gain_pct": 1.577
+    },
+    {
+      "feat": "packet_sizes_Backward_5_Min",
+      "gain_pct": 1.485
+    },
+    {
+      "feat": "ip_id_lo",
+      "gain_pct": 1.359
+    },
+    {
+      "feat": "ip_checksum_lo",
+      "gain_pct": 1.344
+    },
+    {
+      "feat": "IAT_1",
+      "gain_pct": 1.312
+    },
+    {
+      "feat": "packet_sizes_Backward_All_Kurtosis",
+      "gain_pct": 1.094
+    },
+    {
+      "feat": "packet_sizes_Forward_All_Sum",
+      "gain_pct": 1.083
+    },
+    {
+      "feat": "PSD_3",
+      "gain_pct": 1.041
+    },
+    {
+      "feat": "PSD_4",
+      "gain_pct": 0.892
+    },
+    {
+      "feat": "payload_Both_5_Sum",
+      "gain_pct": 0.881
+    },
+    {
+      "feat": "packet_sizes_Both_5_Skewness",
+      "gain_pct": 0.87
+    },
+    {
+      "feat": "tcp_window_hi",
+      "gain_pct": 0.832
+    },
+    {
+      "feat": "flag_A",
+      "gain_pct": 0.818
+    },
+    {
+      "feat": "IAT_0",
+      "gain_pct": 0.706
+    },
+    {
+      "feat": "tcp_window_lo",
+      "gain_pct": 0.696
+    },
+    {
+      "feat": "payload_Backward_All_Range",
+      "gain_pct": 0.666
+    },
+    {
+      "feat": "ip_total_len_lo",
+      "gain_pct": 0.665
+    },
+    {
+      "feat": "ip_total_len_hi",
+      "gain_pct": 0.635
+    },
+    {
+      "feat": "packet_sizes_Backward_5_IQR",
+      "gain_pct": 0.62
+    },
+    {
+      "feat": "packet_sizes_Both_10_Min",
+      "gain_pct": 0.582
+    },
+    {
+      "feat": "packet_sizes_Forward_5_Q50",
+      "gain_pct": 0.539
+    }
+  ],
+  "features_to_reach": {
+    "50": 40,
+    "80": 173,
+    "90": 307,
+    "95": 440
+  },
+  "family_gain_pct": {
+    "scalar(통계량)": 45.78,
+    "IAT(패킷 도착간격)": 24.73,
+    "header(L3/L4)": 24.48,
+    "PSD(주파수 스펙트럼)": 3.15,
+    "flag(TCP)": 1.86
+  }
+}

@@ -1,0 +1,96 @@
+{
+  "csv": "/nmlab/99_sgs/lab_dashboard/static/datasets/lab0701_auto/session_stat_lab0701_auto.csv",
+  "true_col": "task3_folder",
+  "model": "/nmlab/99_sgs/lab_dashboard/models/autolabel_model_candidate_0630_0701folder_0704_serverpy38.pkl",
+  "classes": 101,
+  "rows": [
+    {
+      "threshold": 0.0,
+      "exact_pct": 93.19,
+      "normalized_pct": 93.3,
+      "normalized_excluding_unknown_pct": 93.3,
+      "unknown_pct": 0.0,
+      "coverage_pct": 100.0
+    },
+    {
+      "threshold": 0.1,
+      "exact_pct": 93.19,
+      "normalized_pct": 93.3,
+      "normalized_excluding_unknown_pct": 93.3,
+      "unknown_pct": 0.0,
+      "coverage_pct": 100.0
+    },
+    {
+      "threshold": 0.2,
+      "exact_pct": 93.19,
+      "normalized_pct": 93.3,
+      "normalized_excluding_unknown_pct": 93.31,
+      "unknown_pct": 0.01,
+      "coverage_pct": 99.99
+    },
+    {
+      "threshold": 0.3,
+      "exact_pct": 93.16,
+      "normalized_pct": 93.26,
+      "normalized_excluding_unknown_pct": 93.37,
+      "unknown_pct": 0.11,
+      "coverage_pct": 99.89
+    },
+    {
+      "threshold": 0.4,
+      "exact_pct": 92.73,
+      "normalized_pct": 92.81,
+      "normalized_excluding_unknown_pct": 93.82,
+      "unknown_pct": 1.08,
+      "coverage_pct": 98.92
+    },
+    {
+      "threshold": 0.5,
+      "exact_pct": 91.17,
+      "normalized_pct": 91.21,
+      "normalized_excluding_unknown_pct": 94.97,
+      "unknown_pct": 3.96,
+      "coverage_pct": 96.04
+    },
+    {
+      "threshold": 0.6,
+      "exact_pct": 88.16,
+      "normalized_pct": 88.18,
+      "normalized_excluding_unknown_pct": 96.42,
+      "unknown_pct": 8.54,
+      "coverage_pct": 91.46
+    },
+    {
+      "threshold": 0.7,
+      "exact_pct": 83.8,
+      "normalized_pct": 83.81,
+      "normalized_excluding_unknown_pct": 97.5,
+      "unknown_pct": 14.04,
+      "coverage_pct": 85.96
+    },
+    {
+      "threshold": 0.8,
+      "exact_pct": 77.11,
+      "normalized_pct": 77.12,
+      "normalized_excluding_unknown_pct": 98.42,
+      "unknown_pct": 21.64,
+      "coverage_pct": 78.36
+    },
+    {
+      "threshold": 0.9,
+      "exact_pct": 62.96,
+      "normalized_pct": 62.96,
+      "normalized_excluding_unknown_pct": 99.46,
+      "unknown_pct": 36.7,
+      "coverage_pct": 63.3
+    },
+    {
+      "threshold": 0.95,
+      "exact_pct": 49.29,
+      "normalized_pct": 49.29,
+      "normalized_excluding_unknown_pct": 99.82,
+      "unknown_pct": 50.62,
+      "coverage_pct": 49.38
+    }
+  ]
+}

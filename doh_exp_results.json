@@ -1,0 +1,27 @@
+{
+  "majority_baseline": {
+    "doh_acc": 38.72,
+    "majority_class": "google_chrome",
+    "doh_scored_n": 21231
+  },
+  "1_base_offoff": {
+    "overall_acc": 83.93,
+    "overall_n": 262111,
+    "doh_acc": 52.13,
+    "doh_n": 21231
+  },
+  "2_app1_context": {
+    "overall_acc": 83.76,
+    "overall_n": 262111,
+    "doh_acc": 51.99,
+    "doh_n": 21231
+  },
+  "3_app2_submodel": {
+    "doh_acc": 51.64,
+    "doh_n": 21231
+  },
+  "4_app1p2_both": {
+    "doh_acc": 52.45,
+    "doh_n": 21231
+  }
+}

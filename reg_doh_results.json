@@ -1,0 +1,106 @@
+{
+  "base": {
+    "tag": "base",
+    "doh_acc": 52.13,
+    "overall_acc": 83.93,
+    "doh_n": 21231,
+    "doh_wrong": 10164,
+    "pred_as_codex_spotify": 4281,
+    "pred_as_codex_spotify_wrong": 4181,
+    "wrong_into_majority": 4742,
+    "wrong_pred_top": [
+      [
+        "codex",
+        3468
+      ],
+      [
+        "google_chrome",
+        2645
+      ],
+      [
+        "microsoft_edge",
+        1003
+      ],
+      [
+        "svchost",
+        965
+      ],
+      [
+        "spotify",
+        713
+      ],
+      [
+        "chatgpt",
+        660
+      ],
+      [
+        "nvidia_overlay",
+        516
+      ],
+      [
+        "system",
+        129
+      ]
+    ],
+    "params": {
+      "num_leaves": 63,
+      "min_child_samples": 50,
+      "reg_lambda": 15,
+      "cat_l2": 50,
+      "cat_smooth": 100,
+      "max_cat_threshold": 32
+    }
+  },
+  "reg": {
+    "tag": "reg",
+    "doh_acc": 51.77,
+    "overall_acc": 83.82,
+    "doh_n": 21231,
+    "doh_wrong": 10240,
+    "pred_as_codex_spotify": 4394,
+    "pred_as_codex_spotify_wrong": 4289,
+    "wrong_into_majority": 4709,
+    "wrong_pred_top": [
+      [
+        "codex",
+        3629
+      ],
+      [
+        "google_chrome",
+        2748
+      ],
+      [
+        "microsoft_edge",
+        948
+      ],
+      [
+        "svchost",
+        898
+      ],
+      [
+        "spotify",
+        660
+      ],
+      [
+        "chatgpt",
+        653
+      ],
+      [
+        "nvidia_overlay",
+        497
+      ],
+      [
+        "system",
+        115
+      ]
+    ],
+    "params": {
+      "num_leaves": 31,
+      "min_child_samples": 400,
+      "reg_lambda": 40,
+      "cat_l2": 200,
+      "cat_smooth": 300,
+      "max_cat_threshold": 16
+    }
+  }
+}

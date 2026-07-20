@@ -1,0 +1,92 @@
+{
+  "trained_at": "2026-07-07 04:21:22",
+  "n_sessions": 376658,
+  "n_classes": 101,
+  "dropped_classes": {
+    "opushutil.exe": 4,
+    "compattelrunner.exe": 3,
+    "startmenuexperiencehost.exe": 3,
+    "adobegcclient.exe": 3,
+    "Dwarf_Axe": 3,
+    "desktopcal.exe": 3,
+    "omadmclient.exe": 3,
+    "clientcertcheck.exe": 3,
+    "lockapp.exe": 2,
+    "gamebarpresencewriter.exe": 2,
+    "crossdeviceservice.exe": 2,
+    "tshark.exe": 2,
+    "HPPrinterHealthMonitor": 2,
+    "searchapp.exe": 2,
+    "AdobeGCClient": 2,
+    "GameBarPresenceWriter.exe": 2,
+    "WmiPrvSE.exe": 2,
+    "cowork-svc.exe": 2,
+    "winget.exe": 2,
+    "smartscreen.exe": 2,
+    "Windows_Subsystem_for_Linux": 2,
+    "WinStore.App.exe": 2,
+    "NVDisplay.Container.exe": 2,
+    "Adobe_Reader_and_Acrobat_Manager": 2,
+    "AGSService.exe": 2,
+    "acrocef.exe": 1,
+    "logioptionsplus_updater.exe": 1,
+    "ALPDF": 1,
+    "AYUpdSrv.exe": 1,
+    "vgc.exe": 1,
+    "League of Legends.exe": 1,
+    "adobecollabsync.exe": 1,
+    "PowerToys": 1,
+    "SoftLandingTask.exe": 1,
+    "Wondershare_Studio": 1,
+    "ngm64.exe": 1,
+    "Python": 1,
+    "slack.exe": 1,
+    "dllhost.exe": 1,
+    "AcroCEF.exe": 1,
+    "systemsettings.exe": 1
+  },
+  "best_iteration": 441,
+  "params": {
+    "objective": "multiclass",
+    "metric": "multi_error",
+    "n_estimators": 500,
+    "learning_rate": 0.05,
+    "num_leaves": 63,
+    "min_child_samples": 50,
+    "colsample_bytree": 0.8,
+    "reg_lambda": 10,
+    "min_sum_hessian_in_leaf": 5,
+    "cat_smooth": 100,
+    "cat_l2": 50,
+    "max_cat_threshold": 32,
+    "verbosity": -1,
+    "random_state": 42
+  },
+  "train_csvs": [
+    "static/datasets/lab0630/session_stat_lab0630.csv",
+    "static/datasets/lab0701_auto/session_stat_lab0701_auto.csv",
+    "static/datasets/lab0704/session_stat_lab0704.csv"
+  ],
+  "truth_specs": [
+    {
+      "path": "static/datasets/lab0630/session_stat_lab0630.csv",
+      "truth_col": "task3",
+      "sessions": 134960,
+      "classes": 89
+    },
+    {
+      "path": "static/datasets/lab0701_auto/session_stat_lab0701_auto.csv",
+      "truth_col": "task3_folder",
+      "sessions": 117336,
+      "classes": 87
+    },
+    {
+      "path": "static/datasets/lab0704/session_stat_lab0704.csv",
+      "truth_col": "task3",
+      "sessions": 124437,
+      "classes": 88
+    }
+  ],
+  "source_sessions": 376733,
+  "source_classes": 142
+}

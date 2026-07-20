@@ -1,0 +1,86 @@
+[
+ {
+  "pair": [
+   "google_chrome",
+   "svchost"
+  ],
+  "n": 3240
+ },
+ {
+  "pair": [
+   "google_chrome",
+   "unknown"
+  ],
+  "n": 2287
+ },
+ {
+  "pair": [
+   "chatgpt",
+   "codex"
+  ],
+  "n": 1959
+ },
+ {
+  "pair": [
+   "google_chrome",
+   "microsoft_edge"
+  ],
+  "n": 1553
+ },
+ {
+  "pair": [
+   "notion",
+   "svchost"
+  ],
+  "n": 1073
+ },
+ {
+  "pair": [
+   "servicemapcollector",
+   "system"
+  ],
+  "n": 1042
+ },
+ {
+  "pair": [
+   "claude",
+   "svchost"
+  ],
+  "n": 707
+ },
+ {
+  "pair": [
+   "microsoft_edge",
+   "svchost"
+  ],
+  "n": 706
+ },
+ {
+  "pair": [
+   "chatgpt",
+   "svchost"
+  ],
+  "n": 676
+ },
+ {
+  "pair": [
+   "chatgpt",
+   "google_chrome"
+  ],
+  "n": 594
+ },
+ {
+  "pair": [
+   "codex",
+   "google_chrome"
+  ],
+  "n": 558
+ },
+ {
+  "pair": [
+   "google_chrome",
+   "nvidia_overlay"
+  ],
+  "n": 413
+ }
+]

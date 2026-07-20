@@ -1,0 +1,20 @@
+# 번들 의존성
+.pydeps/
+.venv/
+venv/
+env/
+*.so
+# 대용량 데이터/모델
+*.csv
+*.pkl
+*.zip
+*.pcap
+*.log
+# 캐시/찌꺼기
+__pycache__/
+*.pyc
+*.pid
+# 수동 백업 (git이 대체)
+*.bak*
+# 대시보드 생성 데이터
+static/datasets/

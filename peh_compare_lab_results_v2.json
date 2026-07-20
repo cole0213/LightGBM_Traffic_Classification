@@ -1,0 +1,77 @@
+{
+  "dataset": "lab_1205feat",
+  "n_features": 1205,
+  "split": "random80/20 stratified",
+  "results": [
+    {
+      "model": "LightGBM",
+      "top1": 90.23,
+      "top3": 98.87,
+      "macroF1": 51.0,
+      "ECE": 4.6,
+      "acc@0.5": 90.95,
+      "cov@0.5": 98.55,
+      "acc@0.8": 94.42,
+      "cov@0.8": 90.09,
+      "train_s": 1761.7,
+      "peak_MB": 2059,
+      "size_MB": 126.9
+    },
+    {
+      "model": "XGBoost",
+      "top1": 90.22,
+      "top3": 98.82,
+      "macroF1": 51.49,
+      "ECE": 4.23,
+      "acc@0.5": 91.0,
+      "cov@0.5": 98.49,
+      "acc@0.8": 94.37,
+      "cov@0.8": 89.13,
+      "train_s": 5673.0,
+      "peak_MB": 1314,
+      "size_MB": 33.7
+    },
+    {
+      "model": "RandomForest",
+      "top1": 87.51,
+      "top3": 97.64,
+      "macroF1": 46.01,
+      "ECE": 2.12,
+      "acc@0.5": 91.67,
+      "cov@0.5": 92.31,
+      "acc@0.8": 97.0,
+      "cov@0.8": 72.3,
+      "train_s": 88.4,
+      "peak_MB": 1255,
+      "size_MB": 112.9
+    },
+    {
+      "model": "DecisionTree",
+      "top1": 84.35,
+      "top3": 88.24,
+      "macroF1": 45.52,
+      "ECE": 15.65,
+      "acc@0.5": 84.35,
+      "cov@0.5": 100.0,
+      "acc@0.8": 84.35,
+      "cov@0.8": 100.0,
+      "train_s": 148.2,
+      "peak_MB": 9,
+      "size_MB": 10.3
+    },
+    {
+      "model": "MLP(neural)",
+      "top1": 82.56,
+      "top3": 95.8,
+      "macroF1": 35.15,
+      "ECE": 1.92,
+      "acc@0.5": 88.23,
+      "cov@0.5": 89.52,
+      "acc@0.8": 93.53,
+      "cov@0.8": 72.88,
+      "train_s": 47.9,
+      "peak_MB": 11,
+      "size_MB": 4.2
+    }
+  ]
+}
