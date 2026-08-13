@@ -31,3 +31,5 @@ static/datasets/
 # 대용량 생성 목록 (재생성 가능, 코드 아님)
 *basenames*.txt
 ja3_ja4_missing_filenames.txt
+# 옵시디언 개인 지식 볼트 (GitHub 비공개)
+08_obsidian/
