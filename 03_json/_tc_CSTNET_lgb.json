@@ -1,0 +1,18 @@
+{
+  "CSTNET": {
+    "LightGBM(Boost)": {
+      "params": {
+        "n_estimators": 1000,
+        "num_leaves": 248,
+        "max_depth": 6,
+        "learning_rate": 0.012808093868822819,
+        "min_child_samples": 95,
+        "colsample_bytree": 0.7145103121235692,
+        "subsample": 0.9516710132631241,
+        "reg_lambda": 0.002361245589430399
+      },
+      "val_macro_f1": 91.212,
+      "n_trials": 121
+    }
+  }
+}

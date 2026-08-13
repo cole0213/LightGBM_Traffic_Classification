@@ -1,0 +1,81 @@
+{
+  "name": "cstnet_plus",
+  "nosni": false,
+  "rows": 46382,
+  "classes": 120,
+  "features": 70,
+  "acc": 69.6,
+  "macro_f1": 65.86,
+  "ece": 4.01,
+  "gain_top15": [
+    [
+      "bwd_byte",
+      13.42
+    ],
+    [
+      "fwd_byte",
+      10.09
+    ],
+    [
+      "duration",
+      7.88
+    ],
+    [
+      "dst_ip_c",
+      7.69
+    ],
+    [
+      "fwd_byte_ratio",
+      7.38
+    ],
+    [
+      "avg_payload",
+      5.21
+    ],
+    [
+      "dst_port_n",
+      5.06
+    ],
+    [
+      "fwd_pkt_ratio",
+      4.44
+    ],
+    [
+      "pkt_rate",
+      3.96
+    ],
+    [
+      "payload_size",
+      3.78
+    ],
+    [
+      "src_port_n",
+      3.74
+    ],
+    [
+      "byte_rate",
+      3.33
+    ],
+    [
+      "Aa_3",
+      1.99
+    ],
+    [
+      "ctx_gap_prev",
+      1.89
+    ],
+    [
+      "hour_kst",
+      1.78
+    ]
+  ],
+  "gain_groups": {
+    "flow_stat": 69.5,
+    "5tuple": 17.74,
+    "context": 7.52,
+    "native_stat": 2.69,
+    "name/L7": 2.56
+  },
+  "sec": 107.2,
+  "peak_mb": 972
+}

@@ -1,0 +1,70 @@
+{
+  "CipherSpectrum": {
+    "LightGBM(Boost)": {
+      "params": {
+        "n_estimators": 700,
+        "num_leaves": 19,
+        "max_depth": 9,
+        "learning_rate": 0.0787148981676179,
+        "min_child_samples": 41,
+        "colsample_bytree": 0.5873492543472044,
+        "subsample": 0.9940021473282459,
+        "reg_lambda": 0.00965094660415152
+      },
+      "val_macro_f1": 98.489,
+      "n_trials": 60
+    },
+    "XGBoost(Boost)": {
+      "params": {
+        "n_estimators": 1100,
+        "max_depth": 5,
+        "learning_rate": 0.09027271591679094,
+        "min_child_weight": 2,
+        "colsample_bytree": 0.5698915234249506,
+        "subsample": 0.8424409021945835,
+        "reg_lambda": 0.47698723571082285
+      },
+      "val_macro_f1": 98.143,
+      "n_trials": 60
+    },
+    "CatBoost(Boost)": {
+      "params": {
+        "iterations": 1200,
+        "depth": 7,
+        "learning_rate": 0.10458311218943941,
+        "l2_leaf_reg": 2.111968084154042
+      },
+      "val_macro_f1": 97.41,
+      "n_trials": 60
+    }
+  },
+  "CSTNET": {
+    "LightGBM(Boost)": {
+      "params": {
+        "n_estimators": 1000,
+        "num_leaves": 248,
+        "max_depth": 6,
+        "learning_rate": 0.012808093868822819,
+        "min_child_samples": 95,
+        "colsample_bytree": 0.7145103121235692,
+        "subsample": 0.9516710132631241,
+        "reg_lambda": 0.002361245589430399
+      },
+      "val_macro_f1": 91.212,
+      "n_trials": 121
+    },
+    "XGBoost(Boost)": {
+      "params": {
+        "n_estimators": 1000,
+        "max_depth": 6,
+        "learning_rate": 0.02137634681827604,
+        "min_child_weight": 1,
+        "colsample_bytree": 0.5248413550066257,
+        "subsample": 0.9580603473654642,
+        "reg_lambda": 0.39829567403307214
+      },
+      "val_macro_f1": 90.222,
+      "n_trials": 100
+    }
+  }
+}

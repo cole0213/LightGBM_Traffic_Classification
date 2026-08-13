@@ -1,0 +1,31 @@
+{
+  "CipherSpectrum": {
+    "LightGBM(Boost)": {
+      "params": {
+        "n_estimators": 700,
+        "num_leaves": 19,
+        "max_depth": 9,
+        "learning_rate": 0.0787148981676179,
+        "min_child_samples": 41,
+        "colsample_bytree": 0.5873492543472044,
+        "subsample": 0.9940021473282459,
+        "reg_lambda": 0.00965094660415152
+      },
+      "val_macro_f1": 98.489,
+      "n_trials": 60
+    },
+    "XGBoost(Boost)": {
+      "params": {
+        "n_estimators": 1100,
+        "max_depth": 5,
+        "learning_rate": 0.09027271591679094,
+        "min_child_weight": 2,
+        "colsample_bytree": 0.5698915234249506,
+        "subsample": 0.8424409021945835,
+        "reg_lambda": 0.47698723571082285
+      },
+      "val_macro_f1": 98.143,
+      "n_trials": 60
+    }
+  }
+}

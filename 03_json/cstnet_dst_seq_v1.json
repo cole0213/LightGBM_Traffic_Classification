@@ -1,0 +1,21 @@
+{
+  "rows": 46391,
+  "classes": 120,
+  "train": 37067,
+  "test": 9324,
+  "split": "per-label pcap-number(N) group holdout trailing 20% (누수통제)",
+  "views": {
+    "dst (목적지만)": {
+      "features": 3,
+      "best_iter": 90,
+      "acc": 15.45,
+      "macro_f1": 11.75
+    },
+    "flow (흐름집계만)": {
+      "features": 29,
+      "best_iter": 488,
+      "acc": 81.48,
+      "macro_f1": 77.99
+    }
+  }
+}

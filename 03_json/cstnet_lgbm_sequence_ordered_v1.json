@@ -1,0 +1,18 @@
+{
+  "rows": 46391,
+  "classes": 120,
+  "split": "per-label filename-order trailing 20% (capture-order proxy)",
+  "aggregate_only": {
+    "features": 29,
+    "best_iteration": 498,
+    "accuracy": 81.55,
+    "macro_f1": 78.06
+  },
+  "aggregate_plus_ordered_sequence": {
+    "features": 529,
+    "best_iteration": 700,
+    "accuracy": 89.42,
+    "macro_f1": 87.07
+  },
+  "sec": 1663.7
+}

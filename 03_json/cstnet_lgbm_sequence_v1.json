@@ -1,0 +1,18 @@
+{
+  "rows": 46391,
+  "classes": 120,
+  "split": "random stratified 80:20",
+  "aggregate_only": {
+    "features": 29,
+    "best_iteration": 453,
+    "accuracy": 80.9,
+    "macro_f1": 77.44
+  },
+  "aggregate_plus_ordered_sequence": {
+    "features": 529,
+    "best_iteration": 700,
+    "accuracy": 89.22,
+    "macro_f1": 86.9
+  },
+  "sec": 1706.8
+}

@@ -1,0 +1,40 @@
+{
+  "LAB": {
+    "rows_bv": 199948,
+    "classes": 40,
+    "B": 20,
+    "feat": 789,
+    "models": {
+      "DecisionTree(단일)": {
+        "AC": 88.22,
+        "F1": 75.75,
+        "bias": 11.78,
+        "variance": 8.8,
+        "error": 15.25,
+        "fit_s": 1025.8,
+        "IT_s": 0.89,
+        "mem_MB": 11225
+      },
+      "RandomForest(Bag)": {
+        "AC": 88.0,
+        "F1": 75.46,
+        "bias": 12.0,
+        "variance": 4.34,
+        "error": 12.55,
+        "fit_s": 465.5,
+        "IT_s": 20.07,
+        "mem_MB": 11225
+      },
+      "ExtraTrees(Bag)": {
+        "AC": 87.7,
+        "F1": 74.55,
+        "bias": 12.3,
+        "variance": 4.57,
+        "error": 12.94,
+        "fit_s": 468.5,
+        "IT_s": 23.05,
+        "mem_MB": 11225
+      }
+    }
+  }
+}

@@ -1,0 +1,113 @@
+{
+  "meta": {
+    "protocol": "LODO",
+    "train_days": [
+      "0710",
+      "0711"
+    ],
+    "test_day": "0712",
+    "rows": 139750,
+    "classes": 69,
+    "train": 95262,
+    "test": 44488,
+    "source": "peh1205_keyed_nodoh (15만 층화표본)",
+    "top20": [
+      "iat_Both_5_Q50",
+      "payload_Forward_All_Sample_Std",
+      "payload_Backward_All_Sum",
+      "packet_sizes_Both_5_Skewness",
+      "packet_sizes_Forward_10_Skewness",
+      "ip_id_hi",
+      "packet_sizes_Backward_All_Min",
+      "ip_checksum_hi",
+      "payload_Backward_All_IQR",
+      "payload_Backward_5_Sum",
+      "iat_Forward_5_Q50",
+      "iat_Backward_10_Max",
+      "ip_ttl",
+      "PSD_3",
+      "ip_total_len_lo",
+      "iat_Backward_30_Mean",
+      "Ratio_Bytes_Forward",
+      "payload_Forward_All_Min",
+      "tcp_window_hi",
+      "packet_sizes_Both_All_Min"
+    ],
+    "top40_extra": [
+      "packet_sizes_Backward_All_Geo_Mean",
+      "packet_sizes_Forward_5_Kurtosis",
+      "packet_sizes_Forward_5_Skewness",
+      "payload_Forward_10_Sample_Std",
+      "iat_Forward_10_Q50",
+      "packet_sizes_Forward_All_Sum",
+      "IAT_0",
+      "flag_S",
+      "Pps_Forward",
+      "iat_Backward_All_Mean",
+      "Duration_Forward",
+      "packet_sizes_Forward_5_Q50",
+      "packet_sizes_Forward_10_Q25",
+      "packet_sizes_Both_5_Sum",
+      "iat_Backward_10_Mean",
+      "packet_sizes_Backward_10_Q50",
+      "flag_A",
+      "payload_Backward_All_Pop_Std",
+      "tcp_window_lo",
+      "payload_Backward_All_Variance"
+    ]
+  },
+  "f01_45": {
+    "features": 45,
+    "top1": 86.16,
+    "macro_f1": 51.25,
+    "ece": 3.0,
+    "best_it": 264,
+    "train_sec": 68.7,
+    "peak_mem_mb": 10814
+  },
+  "f02_1205": {
+    "features": 1205,
+    "top1": 80.97,
+    "macro_f1": 47.64,
+    "ece": 2.58,
+    "best_it": 244,
+    "train_sec": 1050.3,
+    "peak_mem_mb": 10814
+  },
+  "f04_45t20": {
+    "features": 65,
+    "top1": 85.87,
+    "macro_f1": 51.99,
+    "ece": 3.2,
+    "best_it": 202,
+    "train_sec": 66.0,
+    "peak_mem_mb": 10814
+  },
+  "f05_45t40": {
+    "features": 85,
+    "top1": 86.05,
+    "macro_f1": 51.6,
+    "ece": 3.02,
+    "best_it": 187,
+    "train_sec": 72.2,
+    "peak_mem_mb": 10814
+  },
+  "f06_45t173": {
+    "features": 218,
+    "top1": 86.22,
+    "macro_f1": 53.04,
+    "ece": 3.71,
+    "best_it": 257,
+    "train_sec": 201.0,
+    "peak_mem_mb": 10814
+  },
+  "f03_both": {
+    "features": 1250,
+    "top1": 86.25,
+    "macro_f1": 52.61,
+    "ece": 3.59,
+    "best_it": 243,
+    "train_sec": 911.2,
+    "peak_mem_mb": 10814
+  }
+}

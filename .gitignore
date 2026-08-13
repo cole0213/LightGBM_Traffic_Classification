@@ -18,3 +18,16 @@ __pycache__/
 *.bak*
 # 대시보드 생성 데이터
 static/datasets/
+07_app/static/datasets/
+# 대용량 데이터·런타임·아카이브 (git 제외 — 코드/문서/결과json만 버전관리)
+06_data/
+07_app/
+04_logs/
+99_trash_20260813/
+*.db
+*.out
+*.npz
+*.parquet
+# 대용량 생성 목록 (재생성 가능, 코드 아님)
+*basenames*.txt
+ja3_ja4_missing_filenames.txt

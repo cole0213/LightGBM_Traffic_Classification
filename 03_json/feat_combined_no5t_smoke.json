@@ -1,0 +1,96 @@
+{
+  "CSTNET_no5t": {
+    "rows": 46372,
+    "classes": 120,
+    "split_lodo": "pcap-N group holdout",
+    "sni_fill": 5.0,
+    "name(SNI) no5t": {
+      "lodo": {
+        "acc": 5.9,
+        "f1": 5.82
+      },
+      "random82": {
+        "acc": 5.43,
+        "f1": 5.45
+      }
+    },
+    "seq+②④": {
+      "lodo": {
+        "acc": 91.92,
+        "f1": 89.95
+      },
+      "random82": {
+        "acc": 91.83,
+        "f1": 89.82
+      }
+    },
+    "combined no5t": {
+      "lodo": {
+        "acc": 91.63,
+        "f1": 89.72
+      },
+      "random82": {
+        "acc": 92.13,
+        "f1": 90.41
+      }
+    },
+    "combined(full 5t)": {
+      "lodo": {
+        "acc": 91.98,
+        "f1": 89.89
+      },
+      "random82": {
+        "acc": 92.4,
+        "f1": 90.3
+      }
+    },
+    "sec": 3906.1
+  },
+  "CipherSpectrum_no5t": {
+    "rows": 123000,
+    "classes": 123,
+    "split_lodo": "pcap-N group holdout",
+    "sni_fill": 100.0,
+    "name(SNI) no5t": {
+      "lodo": {
+        "acc": 35.39,
+        "f1": 25.85
+      },
+      "random82": {
+        "acc": 33.44,
+        "f1": 24.41
+      }
+    },
+    "seq+②④": {
+      "lodo": {
+        "acc": 80.98,
+        "f1": 80.9
+      },
+      "random82": {
+        "acc": 84.38,
+        "f1": 84.33
+      }
+    },
+    "combined no5t": {
+      "lodo": {
+        "acc": 83.11,
+        "f1": 83.03
+      },
+      "random82": {
+        "acc": 85.55,
+        "f1": 85.51
+      }
+    },
+    "combined(full 5t)": {
+      "lodo": {
+        "acc": 82.33,
+        "f1": 82.17
+      },
+      "random82": {
+        "acc": 85.97,
+        "f1": 85.91
+      }
+    },
+    "sec": 4257.6
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "CSTNET": {
+    "XGBoost(Boost)": {
+      "params": {
+        "n_estimators": 1000,
+        "max_depth": 6,
+        "learning_rate": 0.02137634681827604,
+        "min_child_weight": 1,
+        "colsample_bytree": 0.5248413550066257,
+        "subsample": 0.9580603473654642,
+        "reg_lambda": 0.39829567403307214
+      },
+      "val_macro_f1": 90.222,
+      "n_trials": 100
+    }
+  }
+}

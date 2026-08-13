@@ -1,0 +1,11 @@
+{
+  "rows": 123000,
+  "classes": 123,
+  "split": "pcap-N group holdout",
+  "seq (현 89%)": {
+    "features": 529,
+    "acc": 80.77,
+    "macro_f1": 80.64,
+    "best_it": 238
+  }
+}

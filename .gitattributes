@@ -1,0 +1,8 @@
+# 서버(Linux)에서 실행되는 프로젝트 — 모든 텍스트 LF 강제 (CRLF 변환 방지)
+* text=auto eol=lf
+*.png binary
+*.jpg binary
+*.pkl binary
+*.db binary
+*.npz binary
+*.parquet binary

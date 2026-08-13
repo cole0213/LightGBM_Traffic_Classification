@@ -1,0 +1,209 @@
+{
+  "CSTNET": {
+    "rows_bv": 46372,
+    "classes": 120,
+    "B": 15,
+    "feat": 789,
+    "models": {
+      "DecisionTree(단일)": {
+        "AC": 88.23,
+        "F1": 85.48,
+        "bias": 11.77,
+        "variance": 17.86,
+        "error": 21.24,
+        "fit_s": 233.7,
+        "IT_s": 0.11,
+        "mem_MB": 1101
+      },
+      "RandomForest(Bag)": {
+        "AC": 88.12,
+        "F1": 85.64,
+        "bias": 11.88,
+        "variance": 6.69,
+        "error": 13.63,
+        "fit_s": 81.1,
+        "IT_s": 4.59,
+        "mem_MB": 2108
+      },
+      "ExtraTrees(Bag)": {
+        "AC": 83.73,
+        "F1": 80.94,
+        "bias": 16.27,
+        "variance": 9.52,
+        "error": 18.72,
+        "fit_s": 43.5,
+        "IT_s": 4.77,
+        "mem_MB": 3954
+      },
+      "LightGBM(Boost)": {
+        "AC": 91.13,
+        "F1": 88.89,
+        "bias": 8.87,
+        "variance": 4.92,
+        "error": 10.29,
+        "fit_s": 7203.3,
+        "IT_s": 137.73,
+        "mem_MB": 4418
+      },
+      "XGBoost(Boost)": {
+        "AC": 90.91,
+        "F1": 88.63,
+        "bias": 9.09,
+        "variance": 5.03,
+        "error": 10.56,
+        "fit_s": 14845.0,
+        "IT_s": 16.06,
+        "mem_MB": 4803
+      },
+      "CatBoost(Boost)": {
+        "AC": 81.97,
+        "F1": 77.98,
+        "bias": 18.03,
+        "variance": 6.0,
+        "error": 18.95,
+        "fit_s": 24844.1,
+        "IT_s": 0.79,
+        "mem_MB": 2485
+      }
+    },
+    "sec": 24852.9
+  },
+  "CipherSpectrum": {
+    "rows_bv": 123000,
+    "classes": 42,
+    "B": 15,
+    "feat": 789,
+    "models": {
+      "DecisionTree(단일)": {
+        "AC": 97.57,
+        "F1": 96.99,
+        "bias": 2.43,
+        "variance": 3.63,
+        "error": 4.46,
+        "fit_s": 315.6,
+        "IT_s": 0.22,
+        "mem_MB": 2681
+      },
+      "RandomForest(Bag)": {
+        "AC": 97.86,
+        "F1": 96.7,
+        "bias": 2.14,
+        "variance": 1.07,
+        "error": 2.37,
+        "fit_s": 115.9,
+        "IT_s": 4.97,
+        "mem_MB": 2681
+      },
+      "ExtraTrees(Bag)": {
+        "AC": 97.19,
+        "F1": 95.6,
+        "bias": 2.81,
+        "variance": 1.46,
+        "error": 3.29,
+        "fit_s": 96.2,
+        "IT_s": 5.73,
+        "mem_MB": 2681
+      },
+      "LightGBM(Boost)": {
+        "AC": 98.72,
+        "F1": 98.03,
+        "bias": 1.28,
+        "variance": 0.73,
+        "error": 1.51,
+        "fit_s": 4631.3,
+        "IT_s": 152.85,
+        "mem_MB": 3397
+      },
+      "XGBoost(Boost)": {
+        "AC": 98.71,
+        "F1": 98.13,
+        "bias": 1.29,
+        "variance": 0.7,
+        "error": 1.48,
+        "fit_s": 9304.9,
+        "IT_s": 15.15,
+        "mem_MB": 3883
+      },
+      "CatBoost(Boost)": {
+        "AC": 95.41,
+        "F1": 93.54,
+        "bias": 4.59,
+        "variance": 1.36,
+        "error": 4.85,
+        "fit_s": 16627.7,
+        "IT_s": 1.24,
+        "mem_MB": 2681
+      }
+    },
+    "sec": 16649.8
+  },
+  "LAB": {
+    "rows_bv": 199863,
+    "classes": 62,
+    "B": 15,
+    "feat": 789,
+    "models": {
+      "DecisionTree(단일)": {
+        "AC": 83.48,
+        "F1": 64.67,
+        "bias": 16.52,
+        "variance": 12.95,
+        "error": 21.25,
+        "fit_s": 431.2,
+        "IT_s": 0.44,
+        "mem_MB": 20113
+      },
+      "RandomForest(Bag)": {
+        "AC": 83.64,
+        "F1": 64.85,
+        "bias": 16.36,
+        "variance": 5.65,
+        "error": 17.09,
+        "fit_s": 170.0,
+        "IT_s": 11.57,
+        "mem_MB": 20113
+      },
+      "ExtraTrees(Bag)": {
+        "AC": 83.11,
+        "F1": 64.74,
+        "bias": 16.89,
+        "variance": 6.01,
+        "error": 17.62,
+        "fit_s": 227.1,
+        "IT_s": 13.47,
+        "mem_MB": 20113
+      },
+      "LightGBM(Boost)": {
+        "AC": 85.71,
+        "F1": 65.35,
+        "bias": 14.29,
+        "variance": 4.03,
+        "error": 14.96,
+        "fit_s": 10762.3,
+        "IT_s": 325.04,
+        "mem_MB": 20113
+      },
+      "XGBoost(Boost)": {
+        "AC": 85.15,
+        "F1": 64.29,
+        "bias": 14.85,
+        "variance": 3.07,
+        "error": 15.27,
+        "fit_s": 29310.8,
+        "IT_s": 35.54,
+        "mem_MB": 20113
+      },
+      "CatBoost(Boost)": {
+        "AC": 80.22,
+        "F1": 44.97,
+        "bias": 19.78,
+        "variance": 2.86,
+        "error": 20.14,
+        "fit_s": 43313.3,
+        "IT_s": 2.45,
+        "mem_MB": 20113
+      }
+    },
+    "sec": 43474.4
+  }
+}

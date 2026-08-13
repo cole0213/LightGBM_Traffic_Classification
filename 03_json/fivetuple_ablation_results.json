@@ -1,0 +1,621 @@
+{
+  "meta": {
+    "rows": 903970,
+    "classes": 88,
+    "n_1205": 1205,
+    "days": [
+      "0710",
+      "0711",
+      "0712"
+    ],
+    "split": "LODO3fold+random82",
+    "note": "DoH·Unknown 제외, rare<5, Acc=Top-1, mem-safe"
+  },
+  "5tuple단독": {
+    "features": 6,
+    "lodo_folds": [
+      {
+        "acc": 73.97,
+        "macro_f1": 32.7,
+        "ece": 3.14,
+        "classes": 76,
+        "n_train": 571338,
+        "n_test": 332632,
+        "test_day": "0710"
+      },
+      {
+        "acc": 74.23,
+        "macro_f1": 39.55,
+        "ece": 3.21,
+        "classes": 84,
+        "n_train": 619407,
+        "n_test": 284563,
+        "test_day": "0711"
+      },
+      {
+        "acc": 73.4,
+        "macro_f1": 37.85,
+        "ece": 2.48,
+        "classes": 85,
+        "n_train": 617195,
+        "n_test": 286775,
+        "test_day": "0712"
+      }
+    ],
+    "lodo_mean": {
+      "acc": 73.87,
+      "macro_f1": 36.7,
+      "ece": 2.94
+    },
+    "random": {
+      "acc": 77.09,
+      "macro_f1": 39.45,
+      "ece": 0.27,
+      "classes": 88,
+      "n_train": 723176,
+      "n_test": 180794
+    },
+    "gain_top20": [
+      [
+        "dst_ip_c",
+        40.47
+      ],
+      [
+        "dst_net",
+        26.14
+      ],
+      [
+        "dport_c",
+        19.52
+      ],
+      [
+        "dst_port_n",
+        6.06
+      ],
+      [
+        "src_port_n",
+        5.14
+      ],
+      [
+        "L4",
+        2.67
+      ]
+    ],
+    "gain_groups": {
+      "5tuple": 100.0
+    },
+    "view_sec": 3165.5
+  },
+  "Exp1_45-5tuple": {
+    "features": 39,
+    "lodo_folds": [
+      {
+        "acc": 84.92,
+        "macro_f1": 47.07,
+        "ece": 4.59,
+        "classes": 76,
+        "n_train": 571338,
+        "n_test": 332632,
+        "test_day": "0710"
+      },
+      {
+        "acc": 87.63,
+        "macro_f1": 56.58,
+        "ece": 3.76,
+        "classes": 84,
+        "n_train": 619407,
+        "n_test": 284563,
+        "test_day": "0711"
+      },
+      {
+        "acc": 86.38,
+        "macro_f1": 54.38,
+        "ece": 4.22,
+        "classes": 85,
+        "n_train": 617195,
+        "n_test": 286775,
+        "test_day": "0712"
+      }
+    ],
+    "lodo_mean": {
+      "acc": 86.31,
+      "macro_f1": 52.68,
+      "ece": 4.19
+    },
+    "random": {
+      "acc": 91.15,
+      "macro_f1": 59.52,
+      "ece": 0.22,
+      "classes": 88,
+      "n_train": 723176,
+      "n_test": 180794
+    },
+    "gain_top20": [
+      [
+        "L7",
+        21.48
+      ],
+      [
+        "sni_c",
+        17.04
+      ],
+      [
+        "sni_base",
+        11.16
+      ],
+      [
+        "byte_rate",
+        6.08
+      ],
+      [
+        "ctx_anchor_sni",
+        5.59
+      ],
+      [
+        "host",
+        5.46
+      ],
+      [
+        "pkt_rate",
+        3.32
+      ],
+      [
+        "duration",
+        3.17
+      ],
+      [
+        "fwd_byte",
+        3.05
+      ],
+      [
+        "avg_frame",
+        3.05
+      ],
+      [
+        "hour_kst",
+        2.21
+      ],
+      [
+        "payload_size",
+        1.61
+      ],
+      [
+        "fwd_byte_ratio",
+        1.57
+      ],
+      [
+        "ctx_burst_60s",
+        1.41
+      ],
+      [
+        "bwd_byte",
+        1.18
+      ],
+      [
+        "bwd_pkt",
+        1.03
+      ],
+      [
+        "has_FIN_cli",
+        0.97
+      ],
+      [
+        "ctx_pdelta_next",
+        0.92
+      ],
+      [
+        "ctx_burst_5s",
+        0.92
+      ],
+      [
+        "pkt_count",
+        0.78
+      ]
+    ],
+    "gain_groups": {
+      "name/L7": 61.74,
+      "flow_stat": 32.3,
+      "context": 5.96
+    },
+    "view_sec": 5886.4
+  },
+  "45": {
+    "features": 45,
+    "lodo_folds": [
+      {
+        "acc": 85.24,
+        "macro_f1": 46.9,
+        "ece": 4.43,
+        "classes": 76,
+        "n_train": 571338,
+        "n_test": 332632,
+        "test_day": "0710"
+      },
+      {
+        "acc": 87.7,
+        "macro_f1": 56.31,
+        "ece": 4.05,
+        "classes": 84,
+        "n_train": 619407,
+        "n_test": 284563,
+        "test_day": "0711"
+      },
+      {
+        "acc": 86.65,
+        "macro_f1": 54.31,
+        "ece": 4.44,
+        "classes": 85,
+        "n_train": 617195,
+        "n_test": 286775,
+        "test_day": "0712"
+      }
+    ],
+    "lodo_mean": {
+      "acc": 86.53,
+      "macro_f1": 52.51,
+      "ece": 4.31
+    },
+    "random": {
+      "acc": 91.9,
+      "macro_f1": 60.88,
+      "ece": 0.11,
+      "classes": 88,
+      "n_train": 723176,
+      "n_test": 180794
+    },
+    "gain_top20": [
+      [
+        "dst_ip_c",
+        21.4
+      ],
+      [
+        "dst_net",
+        11.97
+      ],
+      [
+        "dport_c",
+        11.33
+      ],
+      [
+        "sni_c",
+        11.09
+      ],
+      [
+        "sni_base",
+        10.08
+      ],
+      [
+        "L7",
+        7.61
+      ],
+      [
+        "host",
+        3.94
+      ],
+      [
+        "ctx_anchor_sni",
+        2.69
+      ],
+      [
+        "dst_port_n",
+        2.18
+      ],
+      [
+        "hour_kst",
+        2.12
+      ],
+      [
+        "src_port_n",
+        1.73
+      ],
+      [
+        "byte_rate",
+        1.57
+      ],
+      [
+        "ctx_burst_60s",
+        1.26
+      ],
+      [
+        "pkt_rate",
+        1.21
+      ],
+      [
+        "fwd_byte",
+        1.03
+      ],
+      [
+        "duration",
+        0.98
+      ],
+      [
+        "avg_frame",
+        0.97
+      ],
+      [
+        "fwd_byte_ratio",
+        0.87
+      ],
+      [
+        "ctx_burst_5s",
+        0.7
+      ],
+      [
+        "ctx_anchor_gap",
+        0.63
+      ]
+    ],
+    "gain_groups": {
+      "5tuple": 48.81,
+      "name/L7": 35.66,
+      "flow_stat": 11.53,
+      "context": 3.99
+    },
+    "view_sec": 5731.1
+  },
+  "Exp2_1205+5tuple": {
+    "features": 1210,
+    "lodo_folds": [
+      {
+        "acc": 84.56,
+        "macro_f1": 46.96,
+        "ece": 4.03,
+        "classes": 76,
+        "n_train": 571338,
+        "n_test": 332632,
+        "test_day": "0710"
+      },
+      {
+        "acc": 87.23,
+        "macro_f1": 59.3,
+        "ece": 3.89,
+        "classes": 84,
+        "n_train": 619407,
+        "n_test": 284563,
+        "test_day": "0711"
+      },
+      {
+        "acc": 85.68,
+        "macro_f1": 55.44,
+        "ece": 4.87,
+        "classes": 85,
+        "n_train": 617195,
+        "n_test": 286775,
+        "test_day": "0712"
+      }
+    ],
+    "lodo_mean": {
+      "acc": 85.82,
+      "macro_f1": 53.9,
+      "ece": 4.26
+    },
+    "random": {
+      "acc": 90.34,
+      "macro_f1": 58.84,
+      "ece": 0.47,
+      "classes": 88,
+      "n_train": 723176,
+      "n_test": 180794
+    },
+    "gain_top20": [
+      [
+        "Dst_IP",
+        33.75
+      ],
+      [
+        "Src_IP",
+        9.84
+      ],
+      [
+        "payload_Forward_All_Sample_Std",
+        2.76
+      ],
+      [
+        "payload_Backward_All_Max",
+        2.09
+      ],
+      [
+        "Dst_Port",
+        1.87
+      ],
+      [
+        "payload_Backward_All_Sum",
+        1.51
+      ],
+      [
+        "ip_id_hi",
+        1.42
+      ],
+      [
+        "ip_checksum_hi",
+        1.35
+      ],
+      [
+        "payload_Backward_5_Sum",
+        1.11
+      ],
+      [
+        "packet_sizes_Both_5_Skewness",
+        1.1
+      ],
+      [
+        "iat_Both_5_Q50",
+        1.03
+      ],
+      [
+        "packet_sizes_Both_All_Min",
+        0.89
+      ],
+      [
+        "payload_Forward_10_Sample_Std",
+        0.85
+      ],
+      [
+        "Src_Port",
+        0.74
+      ],
+      [
+        "packet_sizes_Backward_5_Q50",
+        0.67
+      ],
+      [
+        "iat_Backward_10_Max",
+        0.65
+      ],
+      [
+        "payload_Backward_10_Range",
+        0.62
+      ],
+      [
+        "ip_total_len_lo",
+        0.5
+      ],
+      [
+        "ip_ttl",
+        0.47
+      ],
+      [
+        "packet_sizes_Backward_All_Min",
+        0.45
+      ]
+    ],
+    "gain_groups": {
+      "1205_struct": 47.46,
+      "5tuple": 46.2,
+      "header": 5.98
+    },
+    "view_sec": 69080.3
+  },
+  "1205": {
+    "features": 1205,
+    "lodo_folds": [
+      {
+        "acc": 79.92,
+        "macro_f1": 44.08,
+        "ece": 5.86,
+        "classes": 76,
+        "n_train": 571338,
+        "n_test": 332632,
+        "test_day": "0710"
+      },
+      {
+        "acc": 84.88,
+        "macro_f1": 53.05,
+        "ece": 3.26,
+        "classes": 84,
+        "n_train": 619407,
+        "n_test": 284563,
+        "test_day": "0711"
+      },
+      {
+        "acc": 82.62,
+        "macro_f1": 50.8,
+        "ece": 4.28,
+        "classes": 85,
+        "n_train": 617195,
+        "n_test": 286775,
+        "test_day": "0712"
+      }
+    ],
+    "lodo_mean": {
+      "acc": 82.47,
+      "macro_f1": 49.31,
+      "ece": 4.47
+    },
+    "random": {
+      "acc": 88.46,
+      "macro_f1": 54.68,
+      "ece": 0.18,
+      "classes": 88,
+      "n_train": 723176,
+      "n_test": 180794
+    },
+    "gain_top20": [
+      [
+        "iat_Both_5_Q50",
+        4.44
+      ],
+      [
+        "payload_Forward_All_Sample_Std",
+        3.11
+      ],
+      [
+        "packet_sizes_Both_5_Skewness",
+        2.6
+      ],
+      [
+        "payload_Backward_All_Max",
+        2.11
+      ],
+      [
+        "ip_checksum_hi",
+        2.09
+      ],
+      [
+        "ip_id_hi",
+        2.04
+      ],
+      [
+        "payload_Backward_All_Sum",
+        1.9
+      ],
+      [
+        "payload_Forward_10_Sample_Std",
+        1.74
+      ],
+      [
+        "ip_ttl",
+        1.34
+      ],
+      [
+        "payload_Backward_All_IQR",
+        1.31
+      ],
+      [
+        "iat_Forward_5_Q50",
+        1.15
+      ],
+      [
+        "packet_sizes_Forward_10_Skewness",
+        1.1
+      ],
+      [
+        "packet_sizes_Backward_All_Min",
+        1.02
+      ],
+      [
+        "packet_sizes_Both_All_Min",
+        1.0
+      ],
+      [
+        "packet_sizes_Forward_5_Skewness",
+        0.96
+      ],
+      [
+        "tcp_window_hi",
+        0.92
+      ],
+      [
+        "ip_total_len_lo",
+        0.9
+      ],
+      [
+        "payload_Backward_5_Sum",
+        0.84
+      ],
+      [
+        "iat_Backward_All_Mean",
+        0.83
+      ],
+      [
+        "iat_Backward_10_Max",
+        0.76
+      ]
+    ],
+    "gain_groups": {
+      "1205_struct": 89.32,
+      "header": 10.43
+    },
+    "view_sec": 78965.2
+  }
+}

@@ -1,0 +1,80 @@
+{
+  "name": "cispec",
+  "nosni": false,
+  "rows": 123000,
+  "classes": 41,
+  "features": 45,
+  "acc": 100.0,
+  "macro_f1": 100.0,
+  "ece": 93.96,
+  "gain_top15": [
+    [
+      "sni_base",
+      31.72
+    ],
+    [
+      "sni_c",
+      31.69
+    ],
+    [
+      "dst_ip_c",
+      24.4
+    ],
+    [
+      "dst_net",
+      7.32
+    ],
+    [
+      "ctx_anchor_sni",
+      4.88
+    ],
+    [
+      "pkt_count",
+      0.0
+    ],
+    [
+      "payload_size",
+      0.0
+    ],
+    [
+      "fwd_pkt",
+      0.0
+    ],
+    [
+      "fwd_byte",
+      0.0
+    ],
+    [
+      "bwd_pkt",
+      0.0
+    ],
+    [
+      "bwd_byte",
+      0.0
+    ],
+    [
+      "frame_bytes",
+      0.0
+    ],
+    [
+      "duration",
+      0.0
+    ],
+    [
+      "avg_frame",
+      0.0
+    ],
+    [
+      "avg_payload",
+      0.0
+    ]
+  ],
+  "gain_groups": {
+    "name/L7": 68.29,
+    "5tuple": 31.72,
+    "flow_stat": 0.0,
+    "context": 0.0
+  },
+  "sec": 6.9,
+  "peak_mb": 438
+}

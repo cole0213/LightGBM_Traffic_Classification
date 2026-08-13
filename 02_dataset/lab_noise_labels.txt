@@ -1,0 +1,98 @@
+# LAB 노이즈 라벨 (제거 대상). 한 줄 1라벨, 소문자, .exe 제거된 형태. # 주석.
+# 사용자가 선택: ① 시스템/OS·백그라운드  ② 측정인프라·불명. 실사용자 앱은 유지.
+# 수정 후 재실행하면 반영됨.
+
+# ── ② 측정 인프라·불명 (우리 실험 도구가 낸 트래픽) ──
+servicemapcollector
+autolabellauncher
+socketlogger
+asd_framework
+unknown
+
+# ── ① 시스템/OS 핵심 ──
+svchost
+system
+lsass
+explorer
+rundll32
+wscript
+wmiprvse
+taskhostw
+dashost
+sysmon
+upfc
+ruximics
+textinputhost
+
+# ── ① Windows 셸/검색/알림/백그라운드 ──
+searchapp
+searchhost
+windows_search
+startmenuexperiencehost
+shellexperiencehost
+systemsettings
+lockapp
+smartscreen
+widgets
+backgroundtaskhost
+backgroundtransferhost
+backgrounddownload
+mousocoreworker
+crossdeviceservice
+adnotificationmanager
+wstoastnotification
+gamebarpresencewriter
+softlandingtask
+actionsserver
+compattelrunner
+
+# ── ① Windows Defender/보안 ──
+mpdefendercoreservice
+msmpeng
+ahnlab_safe_transaction
+
+# ── ① 관리/인증/원격관리 서비스 ──
+microsoft_intune
+omadmclient
+sihclient
+clienthealtheval
+clientcertcheck
+
+# ── ① 드라이버 백그라운드(NVIDIA 등) ──
+nvcontainer
+nvdisplay.container
+
+# ── ① 게임안티치트/런처 백그라운드 서비스 ──
+vgc
+vanguard_tray
+nossvc
+gamingservices
+
+# ── ① 업데이터/설치/텔레메트리 ──
+google_updater_x64
+hncupdateservice
+onedrivesetup
+onedrivelauncher
+mupdate2
+mcupdatermodule
+npupdatec
+officec2rclient
+microsoft_desktop_app_installer
+logioptionsplus_updater
+squirrel
+agsservice
+ngm64
+officesvcmgr
+hpprinterhealthmonitor
+wshelper
+cowork-svc
+
+# ── ① Adobe 백그라운드 서비스 ──
+adobecollabsync
+adobegcclient
+adobearm
+acrotray
+flexnet_publisher_32_bit
+
+# ── 불명 커넥터/서비스(측정계열 추정) ──
+nliveconnector

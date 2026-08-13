@@ -1,0 +1,214 @@
+{
+  "name": "cstnet",
+  "results": [
+    {
+      "name": "45_base",
+      "feat": 45,
+      "acc": 69.43,
+      "macro_f1": 65.76,
+      "ece": 4.26,
+      "gain_top15": [
+        [
+          "bwd_byte",
+          13.32
+        ],
+        [
+          "fwd_byte",
+          10.34
+        ],
+        [
+          "duration",
+          8.08
+        ],
+        [
+          "dst_ip_c",
+          7.86
+        ],
+        [
+          "fwd_byte_ratio",
+          7.46
+        ],
+        [
+          "avg_payload",
+          5.28
+        ],
+        [
+          "dst_port_n",
+          5.18
+        ],
+        [
+          "fwd_pkt_ratio",
+          4.41
+        ],
+        [
+          "pkt_rate",
+          4.21
+        ],
+        [
+          "payload_size",
+          3.63
+        ],
+        [
+          "src_port_n",
+          3.53
+        ],
+        [
+          "byte_rate",
+          3.31
+        ],
+        [
+          "has_FIN_cli",
+          2.92
+        ],
+        [
+          "ctx_gap_prev",
+          1.89
+        ],
+        [
+          "hour_kst",
+          1.8
+        ]
+      ]
+    },
+    {
+      "name": "45+ws",
+      "feat": 63,
+      "acc": 73.64,
+      "macro_f1": 69.75,
+      "ece": 6.03,
+      "gain_top15": [
+        [
+          "bwd_byte",
+          12.04
+        ],
+        [
+          "fwd_byte",
+          9.31
+        ],
+        [
+          "dst_ip_c",
+          7.15
+        ],
+        [
+          "duration",
+          7.11
+        ],
+        [
+          "fwd_byte_ratio",
+          6.63
+        ],
+        [
+          "avg_payload",
+          4.5
+        ],
+        [
+          "dst_port_n",
+          4.12
+        ],
+        [
+          "src_port_n",
+          3.77
+        ],
+        [
+          "fwd_pkt_ratio",
+          3.76
+        ],
+        [
+          "pkt_rate",
+          3.52
+        ],
+        [
+          "ws_win_last",
+          3.46
+        ],
+        [
+          "ws_win_mean",
+          3.33
+        ],
+        [
+          "payload_size",
+          3.11
+        ],
+        [
+          "byte_rate",
+          3.0
+        ],
+        [
+          "has_FIN_cli",
+          2.59
+        ]
+      ]
+    },
+    {
+      "name": "45+ws_tuned",
+      "feat": 63,
+      "acc": 73.9,
+      "macro_f1": 69.97,
+      "ece": 6.25,
+      "gain_top15": [
+        [
+          "bwd_byte",
+          11.81
+        ],
+        [
+          "fwd_byte",
+          9.32
+        ],
+        [
+          "duration",
+          6.94
+        ],
+        [
+          "fwd_byte_ratio",
+          6.9
+        ],
+        [
+          "dst_ip_c",
+          5.85
+        ],
+        [
+          "avg_payload",
+          4.56
+        ],
+        [
+          "dst_port_n",
+          4.02
+        ],
+        [
+          "fwd_pkt_ratio",
+          3.84
+        ],
+        [
+          "pkt_rate",
+          3.84
+        ],
+        [
+          "payload_size",
+          3.63
+        ],
+        [
+          "ws_win_last",
+          3.54
+        ],
+        [
+          "src_port_n",
+          3.29
+        ],
+        [
+          "ws_win_mean",
+          3.2
+        ],
+        [
+          "byte_rate",
+          3.19
+        ],
+        [
+          "has_FIN_cli",
+          2.43
+        ]
+      ]
+    }
+  ],
+  "sec": 360.9,
+  "peak_mb": 1327
+}

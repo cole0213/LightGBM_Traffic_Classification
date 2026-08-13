@@ -1,0 +1,14 @@
+{
+  "CipherSpectrum": {
+    "CatBoost(Boost)": {
+      "params": {
+        "iterations": 1200,
+        "depth": 7,
+        "learning_rate": 0.10458311218943941,
+        "l2_leaf_reg": 2.111968084154042
+      },
+      "val_macro_f1": 97.41,
+      "n_trials": 60
+    }
+  }
+}

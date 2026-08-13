@@ -1,0 +1,34 @@
+{
+  "meta": {
+    "days": [
+      "0710",
+      "0711",
+      "0712"
+    ],
+    "feat": 45,
+    "rows": 1329816,
+    "classes": 111,
+    "doh_excluded": true,
+    "peak_after_load_mb": 2989
+  },
+  "lodo": {
+    "top1": 85.56,
+    "macro_f1": 42.58,
+    "ece": 4.66,
+    "n_train": 909308,
+    "n_test": 420508,
+    "n_classes_train": 108,
+    "train_sec": 2629.5,
+    "peak_mem_mb": 3971
+  },
+  "random": {
+    "top1": 91.46,
+    "macro_f1": 56.41,
+    "ece": 0.68,
+    "n_train": 1063852,
+    "n_test": 265964,
+    "n_classes_train": 111,
+    "train_sec": 3014.5,
+    "peak_mem_mb": 4462
+  }
+}

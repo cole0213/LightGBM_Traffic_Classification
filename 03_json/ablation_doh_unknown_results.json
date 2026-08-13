@@ -1,0 +1,109 @@
+{
+  "meta": {
+    "train_days": [
+      "0710",
+      "0711",
+      "0712",
+      "0713"
+    ],
+    "test_day": "0714",
+    "tau": 0.3,
+    "n_jobs": 6,
+    "min_class_n": 5,
+    "doh_train": 5451,
+    "doh_test": 1636,
+    "test_scored": 20000
+  },
+  "T0_baseline": {
+    "scored_n": 20000,
+    "E_all": {
+      "overall": {
+        "n": 20000,
+        "acc": 80.99,
+        "macro_f1": 34.48,
+        "ece": 1.29
+      },
+      "non_doh": {
+        "n": 18364,
+        "acc": 84.0,
+        "macro_f1": 35.78,
+        "ece": 1.52
+      },
+      "doh": {
+        "n": 1636,
+        "acc": 47.19,
+        "macro_f1": 10.86,
+        "ece": 8.61
+      }
+    },
+    "E_tau": {
+      "tau": 0.3,
+      "coverage_pct": 98.0,
+      "overall": {
+        "n": 19601,
+        "acc": 82.08,
+        "macro_f1": 35.93
+      },
+      "non_doh": {
+        "n": 18039,
+        "acc": 85.02,
+        "macro_f1": 37.3
+      },
+      "doh": {
+        "n": 1562,
+        "acc": 48.14,
+        "macro_f1": 11.05
+      }
+    },
+    "train_sec": 13.6,
+    "train_rows": 59933,
+    "n_classes": 63,
+    "peak_mem_mb": 1599.0
+  },
+  "T1_no_doh_train": {
+    "scored_n": 20000,
+    "E_all": {
+      "overall": {
+        "n": 20000,
+        "acc": 78.08,
+        "macro_f1": 33.77,
+        "ece": 2.76
+      },
+      "non_doh": {
+        "n": 18364,
+        "acc": 83.6,
+        "macro_f1": 35.31,
+        "ece": 1.42
+      },
+      "doh": {
+        "n": 1636,
+        "acc": 16.14,
+        "macro_f1": 3.28,
+        "ece": 31.72
+      }
+    },
+    "E_tau": {
+      "tau": 0.3,
+      "coverage_pct": 96.91,
+      "overall": {
+        "n": 19381,
+        "acc": 79.74,
+        "macro_f1": 35.39
+      },
+      "non_doh": {
+        "n": 18021,
+        "acc": 84.65,
+        "macro_f1": 36.91
+      },
+      "doh": {
+        "n": 1360,
+        "acc": 14.78,
+        "macro_f1": 1.9
+      }
+    },
+    "train_sec": 13.0,
+    "train_rows": 54485,
+    "n_classes": 63,
+    "peak_mem_mb": 1599.0
+  }
+}

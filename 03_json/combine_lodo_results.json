@@ -1,0 +1,55 @@
+{
+  "meta": {
+    "protocol": "LODO(day-based)",
+    "train_days": [
+      "0710",
+      "0711"
+    ],
+    "test_day": "0712",
+    "joined": 139750,
+    "classes": 69,
+    "train": 95262,
+    "test": 44488,
+    "day_counts": {
+      "0710": 51526,
+      "0712": 44488,
+      "0711": 43736
+    },
+    "doh_excluded": true,
+    "n_feat45": 45,
+    "n_feat1205": 1205
+  },
+  "feat45": {
+    "features": 45,
+    "top1": 86.16,
+    "macro_f1": 51.25,
+    "ece": 3.0,
+    "classes": 67,
+    "test_unseen_class_rows": 16,
+    "best_it": 264,
+    "train_sec": 68.5,
+    "peak_mem_mb": 11424
+  },
+  "feat1205": {
+    "features": 1205,
+    "top1": 80.97,
+    "macro_f1": 47.64,
+    "ece": 2.58,
+    "classes": 67,
+    "test_unseen_class_rows": 16,
+    "best_it": 244,
+    "train_sec": 1049.8,
+    "peak_mem_mb": 11902
+  },
+  "feat_both": {
+    "features": 1250,
+    "top1": 86.25,
+    "macro_f1": 52.61,
+    "ece": 3.59,
+    "classes": 67,
+    "test_unseen_class_rows": 16,
+    "best_it": 243,
+    "train_sec": 913.0,
+    "peak_mem_mb": 12242
+  }
+}

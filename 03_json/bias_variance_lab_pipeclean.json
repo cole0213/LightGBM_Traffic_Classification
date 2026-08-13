@@ -1,0 +1,61 @@
+{
+  "LAB": {
+    "rows_bv": 199879,
+    "classes": 65,
+    "B": 15,
+    "feat": 789,
+    "models": {
+      "DecisionTree(단일)": {
+        "AC": 87.61,
+        "F1": 68.95,
+        "bias": 12.39,
+        "variance": 12.48,
+        "error": 17.69,
+        "fit_s": 534.6,
+        "IT_s": 0.43,
+        "mem_MB": 15199
+      },
+      "RandomForest(Bag)": {
+        "AC": 88.04,
+        "F1": 68.4,
+        "bias": 11.96,
+        "variance": 3.96,
+        "error": 12.6,
+        "fit_s": 180.6,
+        "IT_s": 11.74,
+        "mem_MB": 15199
+      },
+      "ExtraTrees(Bag)": {
+        "AC": 87.54,
+        "F1": 68.5,
+        "bias": 12.46,
+        "variance": 4.35,
+        "error": 13.21,
+        "fit_s": 206.2,
+        "IT_s": 13.3,
+        "mem_MB": 15199
+      },
+      "LightGBM(Boost)": {
+        "AC": 88.3,
+        "F1": 68.09,
+        "bias": 11.7,
+        "variance": 3.39,
+        "error": 12.25,
+        "fit_s": 9227.1,
+        "IT_s": 316.32,
+        "mem_MB": 15199
+      },
+      "XGBoost(Boost)": {
+        "AC": 87.92,
+        "F1": 67.21,
+        "bias": 12.08,
+        "variance": 2.98,
+        "error": 12.49,
+        "fit_s": 3448.3,
+        "IT_s": 67.9,
+        "mem_MB": 15199
+      }
+    },
+    "sec": 3632.6
+  }
+}

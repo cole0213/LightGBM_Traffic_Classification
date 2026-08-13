@@ -1,0 +1,9 @@
+{
+  "max_packets": 100,
+  "with_sni": true,
+  "pcaps_seen": 123000,
+  "flows_written": 123000,
+  "parts": 25,
+  "errors": 0,
+  "created_at": "2026-08-05T07:54:06Z"
+}

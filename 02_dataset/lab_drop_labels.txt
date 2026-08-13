@@ -1,0 +1,7 @@
+# LAB 완전 제거 라벨 = 측정 인프라·불명(실험 오염, 정답 부재). 세 실험 모두 제거.
+servicemapcollector
+autolabellauncher
+socketlogger
+asd_framework
+nliveconnector
+unknown

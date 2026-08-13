@@ -1,0 +1,17 @@
+{
+  "LAB": {
+    "XGBoost(Boost)": {
+      "params": {
+        "n_estimators": 1000,
+        "max_depth": 9,
+        "learning_rate": 0.21463856449072558,
+        "min_child_weight": 2,
+        "colsample_bytree": 0.7359197043631083,
+        "subsample": 0.9679173372422242,
+        "reg_lambda": 0.04466300551764937
+      },
+      "val_macro_f1": 71.706,
+      "n_trials": 60
+    }
+  }
+}

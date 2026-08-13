@@ -1,0 +1,46 @@
+{
+  "meta": {
+    "days": [
+      "0710",
+      "0711",
+      "0712"
+    ],
+    "joined": 139750,
+    "classes": 69,
+    "train": 111800,
+    "test": 27950,
+    "doh_excluded": true,
+    "n_feat45": 45,
+    "n_feat1205": 1205
+  },
+  "feat45": {
+    "features": 45,
+    "top1": 89.35,
+    "macro_f1": 57.7,
+    "ece": 1.66,
+    "classes": 69,
+    "best_it": 475,
+    "train_sec": 70.3,
+    "peak_mem_mb": 11249
+  },
+  "feat1205": {
+    "features": 1205,
+    "top1": 86.0,
+    "macro_f1": 52.99,
+    "ece": 1.79,
+    "classes": 69,
+    "best_it": 500,
+    "train_sec": 1249.1,
+    "peak_mem_mb": 12122
+  },
+  "feat_both": {
+    "features": 1250,
+    "top1": 89.75,
+    "macro_f1": 56.37,
+    "ece": 0.49,
+    "classes": 69,
+    "best_it": 203,
+    "train_sec": 590.5,
+    "peak_mem_mb": 12513
+  }
+}

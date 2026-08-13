@@ -1,0 +1,113 @@
+{
+  "CSTNET_no5t": {
+    "rows": 46372,
+    "classes": 120,
+    "split_lodo": "pcap-N group holdout",
+    "sni_fill": 5.0,
+    "name(SNI) no5t": {
+      "lodo": {
+        "acc": 5.9,
+        "f1": 5.82
+      },
+      "random82": {
+        "acc": 5.43,
+        "f1": 5.45
+      }
+    },
+    "seq+②④": {
+      "lodo": {
+        "acc": 91.92,
+        "f1": 89.95
+      },
+      "random82": {
+        "acc": 91.83,
+        "f1": 89.82
+      }
+    },
+    "combined no5t": {
+      "lodo": {
+        "acc": 91.63,
+        "f1": 89.72
+      },
+      "random82": {
+        "acc": 92.13,
+        "f1": 90.41
+      }
+    },
+    "combined(full 5t)": {
+      "lodo": {
+        "acc": 91.98,
+        "f1": 89.89
+      },
+      "random82": {
+        "acc": 92.4,
+        "f1": 90.3
+      }
+    },
+    "sec": 3866.7
+  },
+  "CipherSpectrum_no5t": {
+    "rows": 123000,
+    "classes": 42,
+    "split_lodo": "pcap-N group holdout",
+    "sni_fill": 100.0,
+    "name(SNI) no5t": {
+      "lodo": {
+        "acc": 99.19,
+        "f1": 97.14
+      },
+      "random82": {
+        "acc": 99.17,
+        "f1": 97.13
+      }
+    },
+    "seq+②④": {
+      "lodo": {
+        "acc": 98.68,
+        "f1": 98.14
+      },
+      "random82": {
+        "acc": 98.94,
+        "f1": 98.4
+      }
+    },
+    "combined no5t": {
+      "lodo": {
+        "acc": 99.55,
+        "f1": 99.02
+      },
+      "random82": {
+        "acc": 99.57,
+        "f1": 99.06
+      }
+    },
+    "combined(full 5t)": {
+      "lodo": {
+        "acc": 99.44,
+        "f1": 98.81
+      },
+      "random82": {
+        "acc": 99.61,
+        "f1": 99.14
+      }
+    },
+    "sec": 2241.7
+  },
+  "LAB_no5t": {
+    "rows": 878023,
+    "classes": 85,
+    "split_lodo": "pcap-N group holdout",
+    "sni_fill": 19.3,
+    "combined no5t": {
+      "lodo": {
+        "acc": 81.49,
+        "f1": 60.26
+      },
+      "random82": {
+        "acc": 86.37,
+        "f1": 61.88
+      }
+    },
+    "sec": 8807.4
+  }
+}
