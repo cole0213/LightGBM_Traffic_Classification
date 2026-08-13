@@ -1,45 +1,53 @@
-# 디렉터리 구조 (2026-08-01 정리)
+# 디렉터리 구조 (2026-08-13 재정리)
 
-lab_dashboard_ver0.1 코드/데이터 재구성 결과. 루트의 흩어진 파일 200여 개를 용도별 폴더로 분리했다.
+연구 방향이 트리앙상블(LightGBM) + 노이즈 정제 + 일반화로 확정되면서, 흩어진 데이터·미사용 코드를 대거 정리했다. (이전 2026-08-01 정리를 대체.)
 
 ```
-lab_dashboard_ver0.1/
-├─ 01_code/        # 모든 .py / .sh / .ps1 / .bat  (104개)
-├─ 02_dataset/     # 루트에 있던 결과 csv / txt 스냅샷
-├─ 03_json/        # 모든 결과·설정 json (38개)
-├─ 04_logs/        # 실행 로그 .log / .pid / .stdout (67개)
-├─ 05_docs/        # 스터디·클래스 문서 .md
-├─ _trash_20260801/# .bak 백업 5개 (삭제 보류, 확인 후 제거)
-│
-│   ── 아래는 "코드가 절대 서버경로(/nmlab/...)로 참조" + 용량 때문에 루트 유지 ──
-├─ models/         # 학습 모델 .pkl (906MB)  ← app/autolabel/pipeline 이 참조
-├─ static/         # Flask 대시보드 웹 자산 (app.js, dashboard.html ...)
-├─ tools/          # ja4_official 등 외부 도구
-├─ canonical_*/    # canonical seq789 실험 입출력 (진행 중이던 작업)
-├─ cstnet_seq_*/   # CSTNET 시퀀스 추출 산출물
-├─ lab_full45_seq_v2*/ # LAB seq789 평가 (가장 최근 작업)
-├─ canonical_inputs/
-└─ CANONICAL_EXPERIMENT_STATUS.md  # 실험 진행 상태 (루트 유지)
+lab_dashboard_ver0.1/            # ← 예정: 01_MachineLearning 으로 이름 변경 (LAB 튜닝 job 완주 후)
+├─ 01_code/        # 현재 쓰는 코드만 17개 (연구핵심 4 + 러너 10 + 대시보드 3)
+├─ 02_dataset/     # 라벨맵·노이즈 basename 목록·클래스 리스트 (txt/csv)
+├─ 03_json/        # 결과·튜닝 json + optuna sqlite(*.db, git 제외)
+├─ 04_logs/        # 실행 로그 (*.out/*.log, git 제외)
+├─ 05_docs/        # 스터디·실험 문서 .md
+├─ 06_data/        # 연구 데이터 (seq789 · canonical) — 대용량, git 제외
+│   ├─ canonical_cipherspec_seq_v2/   # CipherSpectrum (도메인 42)
+│   ├─ canonical_cstnet_seq/          # CSTNET (앱 120)
+│   ├─ canonical_inputs/
+│   ├─ lab_full45_seq_v2_904k/        # LAB week2 seq789
+│   └─ lab_week3_seq_100/             # LAB week3 seq789
+├─ 07_app/         # 대시보드 런타임 — git 제외
+│   ├─ models/     # 학습 모델 .pkl
+│   ├─ static/     # Flask 웹 자산
+│   └─ tools/      # ja4_official 등 외부 도구
+└─ 99_trash_20260813/  # 미사용 아카이브 (되돌리기 가능, 하드삭제 보류)
+    ├─ 01_code_dead/   # 미사용 스크립트 111개 (STTabNet 폐기분·ablation·smoke·구버전)
+    └─ (구버전 데이터·smoke·tmp·STTabNet 산출물 폴더들)
 ```
 
-## 코드 이동에 따른 경로 패치
+## 01_code 유지 목록 (17)
 
-코드를 `01_code/`로 옮기면서, 데이터·모델·static 을 참조하는 핵심 3파일의 경로 기준을
-프로젝트 루트로 재조정했다 (`Path(__file__).parent` → 루트).
+- 연구핵심: `bias_variance.py` `tune_boosting.py` `extract_pcap_seq_sni_v2.py` `probe_lgbm_it.py`
+- 러너: `run_tune_clean.sh`(현 튜닝 job) `run_bias_variance.sh` `run_bv_tuned.sh` `run_noise_bv.sh` `run_week3_bv.sh` `run_week_bv.sh` `run_catboost_bv.sh` `run_lab_noise.sh` `run_tune_boosting.sh` `run_tune_xgbgpu.sh`
+- 대시보드: `app.py` `autolabel.py` `pipeline.py`
 
-- `01_code/app.py` : `CODE_DIR`(01_code) / `BASE_DIR`(루트) 분리. static·models 는 루트, pipeline.py 는 01_code.
-- `01_code/autolabel.py`, `01_code/pipeline.py` : `BASE_DIR = ...parent.parent` (루트) → models·static 정상 참조.
-- `01_code/backfill_sizes.py` : `sys.path` 를 자기 폴더(01_code)에 추가 → `import pipeline` 유지 (수정 불필요).
+## 폴더 이동에 따른 경로 패치 (2026-08-13)
 
-절대 서버경로(`/nmlab/99_sgs/03_ML/lab_dashboard_ver0.1/...`)를 쓰는 스크립트 14개와
-CWD 기준으로 결과를 쓰는 스크립트들은 이동 영향 없음. 서로 간 `import autolabel/pipeline`
-도 모두 `01_code/` 안 형제 파일이라 그대로 동작.
+데이터를 `06_data/`, 대시보드 런타임을 `07_app/`로 옮기며 유지 코드의 참조를 일괄 갱신했다.
 
-## 주의 (알려진 잔여 사항)
+- 러너 10개(.sh): `$BASE/<datadir>` → `$BASE/06_data/<datadir>` (canonical_*, lab_full45_seq_v2_904k, lab_week3_seq_100).
+- `app.py` `autolabel.py` `pipeline.py`: `BASE_DIR / "models"|"static"` → `BASE_DIR / "07_app" / ...`.
+- `bias_variance.py` `tune_boosting.py`는 seq 경로를 인자로 받으므로(러너가 전달) 자체 수정 불필요.
+- 유지 코드는 전부 상대 기준(`BASE=$(pwd)`, `BASE_DIR=Path(__file__).parent.parent`)만 쓴다. 절대 서버경로(`/nmlab/...`, `/root/02_SGS/lab_dashboard_ver0.1`)를 박아둔 스크립트는 전부 미사용이라 `99_trash_20260813/01_code_dead/`로 이동됨.
 
-- `01_code/poll_*.sh`, `watchdog_*.sh` 는 종료된 실행의 로그를 옛 이름(`lab_seq.log` 등)으로
-  tail 한다. 로그가 `04_logs/`로 이동해 그대로는 못 찾지만, 해당 실행은 이미 끝난 편의 스크립트라
-  기능상 문제 없음. 재사용 시 `04_logs/` 경로로 고쳐 쓰면 된다.
-- 결과 json 을 CWD 에 쓰는 스크립트는 재실행 시 실행 위치에 새 json 을 만든다. 과거 스냅샷은
-  `03_json/`에 보관됨.
-- 데이터 폴더(models/canonical_*/...)는 서버 실행 경로와 desync 를 피하려 **이동하지 않았다**.
+## 이름 변경 예정 (lab_dashboard_ver0.1 → 01_MachineLearning)
+
+- 유지 코드가 전부 상대경로라 **폴더명 변경 시 코드 수정은 필요 없다** (새 위치에서 실행하면 `pwd`/`__file__`이 자동 반영).
+- 이름이 박힌 곳은 문서·주석뿐: 이 파일, `HANDOFF.md`, `05_docs/*`, `app.py`/`pipeline.py` 주석, `.agents/AGENTS.md` — 리네임 시 함께 갱신.
+- **실행 중인 LAB 튜닝 job의 작업 디렉터리라, job 완주 후 이름 변경** (optuna sqlite 경로 재열림·SMB open-file 충돌 위험 회피). optuna 스터디는 resume 가능(`load_if_exists`)이라 최악의 경우도 재실행으로 복구.
+
+## git 버전 관리 (2026-08-13 시작)
+
+- 저장소: `github.com/cole0213/LightGBM_Traffic_Classification` (origin/master).
+- `.gitignore`: 대용량·런타임 제외 — `06_data/` `07_app/` `04_logs/` `99_trash_20260813/` `*.db` `*.out` `*.pkl` `*.csv` `*basenames*.txt` 등. 코드·문서·결과 json만 버전관리.
+- `.gitattributes`: `* text=auto eol=lf` — 서버(Linux) 실행 스크립트의 CRLF 오염 방지.
+- 커밋·push는 `/commit` 커맨드(수동 트리거)로.

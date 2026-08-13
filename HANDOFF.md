@@ -5,6 +5,18 @@
 
 ---
 
+## ★ 최신 갱신 (2026-08-13)
+
+- **저장소 대청소 + 폴더 재편**: 루트 40 → 8 (`01_code 02_dataset 03_json 04_logs 05_docs 06_data 07_app 99_trash_20260813`).
+  - 연구 데이터(seq789·canonical) → **`06_data/`**, 대시보드 런타임(models/static/tools) → **`07_app/`**.
+  - `01_code` 121 → **17개**(연구핵심·러너·대시보드만). 미사용 코드/데이터 → `99_trash_20260813/`(되돌리기 가능, 하드삭제 보류).
+  - 이동에 맞춰 유지 코드 경로 참조 일괄 갱신(러너 `$BASE/06_data/...`, app 3파일 `BASE_DIR/07_app/...`). 상세 = `STRUCTURE.md`.
+- **git 버전관리 시작**: `github.com/cole0213/LightGBM_Traffic_Classification` (origin/master, push 완료). `.gitignore`(대용량·런타임 제외)·`.gitattributes`(LF 강제). 코드 작업 후 `/commit`으로 커밋+push.
+- **PPT 재작업**: `심규상_260813_연구계획.pptx`(OneDrive) — STTabNet 제거, 클린 데이터셋만, BV 표에 전체지표(F1/Acc/bias/var/err/학습s/추론s/mem).
+- **⚠️ 예정 — 폴더 이름 변경**: `lab_dashboard_ver0.1` → **`01_MachineLearning`**. 유지 코드가 전부 상대경로라 **코드 수정 불필요**(문서·주석 이름만 갱신). **실행 중 LAB 튜닝 job의 작업 디렉터리라 job 완주 후 진행**(optuna sqlite 경로 재열림·SMB open-file 충돌 회피). optuna resume 가능이라 최악도 재실행 복구.
+
+---
+
 ## 0. 환경 · 절대 규칙 (반드시 준수)
 
 - **로컬 PC(Windows)에서 학습/추출/heavy 연산 금지.** ML·pcap추출은 서버에서. (PPT용 python-pptx, 가벼운 데이터 조인/집계는 로컬 `C:\Python313\python.exe` 승인됨. soffice/pdftoppm은 로컬에 없음 → PPT 시각 QA 불가.)
@@ -77,10 +89,10 @@ cd /root/02_SGS/lab_dashboard_ver0.1 && BASE=$(pwd) N_JOBS=11 TRIALS=60 nohup ba
 
 | 데이터셋 | seq 경로 | flow | 클래스 | 노이즈(파이프라인) |
 |---|---|---|---|---|
-| CipherSpectrum | `canonical_cipherspec_seq_v2` | 123,000 | 42(도메인) | ~0% (De=정답이라 제외) |
-| CSTNET(tls) | `canonical_cstnet_seq` | 46,372 | 120(도메인) | ~0% |
-| LAB week2 | `lab_full45_seq_v2_904k` | 146만→canon 87.9만 | 62~65(프로세스) | 30.3% (DNS/CDN/배경) |
-| LAB week3 | `lab_week3_seq_100` | 243만→dedup 227만 | 123→클린79 | 30.7% |
+| CipherSpectrum | `06_data/canonical_cipherspec_seq_v2` | 123,000 | 42(도메인) | ~0% (De=정답이라 제외) |
+| CSTNET(tls) | `06_data/canonical_cstnet_seq` | 46,372 | 120(도메인) | ~0% |
+| LAB week2 | `06_data/lab_full45_seq_v2_904k` | 146만→canon 87.9만 | 62~65(프로세스) | 30.3% (DNS/CDN/배경) |
+| LAB week3 | `06_data/lab_week3_seq_100` | 243만→dedup 227만 | 123→클린79 | 30.7% |
 
 - 노이즈 규칙별(LAB): **Cc_2 DNS(port53)가 압도적**(week2 28%·week3 23%), De google 2~3%, SMB, 브로드캐스트, DoH 0.3%.
 - 원본 pcap: week2/3 LAB=서버28 `//RAID1/00_DATASET/23_PRISM_week/2026.07/Week2·Week3`. VPN/Tor·CSTNET·Cipher=서버99 `X:\data-8t`.
