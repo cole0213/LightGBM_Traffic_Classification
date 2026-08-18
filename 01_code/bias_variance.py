@@ -21,6 +21,9 @@ from sklearn.metrics import f1_score
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import RandomForestClassifier, ExtraTreesClassifier, HistGradientBoostingClassifier
 import lightgbm as lgb
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import seqdata  # seq 로드 + 라벨링(모듈화, 하니스와 공유)
+from features import build_features  # seq789 피처 조립(모듈화). 기본 전체그룹=기존과 bit-exact.
 
 NAME = sys.argv[1]; SEQDIR = Path(sys.argv[2]); OUT = Path(sys.argv[3]); IS_LAB = '--lab' in sys.argv
 SUB = int(os.environ.get('BV_SUB', '0'))   # 0 = 서브샘플 없이 전량 사용
@@ -31,80 +34,30 @@ TUNED = json.load(open(os.environ['TUNED_PARAMS'], encoding='utf-8')) if os.envi
 def _tuned(mkey): return dict(TUNED.get(NAME, {}).get(mkey, {}).get('params', {}))  # 없으면 {} → 통일 기본값 유지
 RNG = np.random.RandomState(42)
 
-# ---------- seq789 피처 로드 ----------
+# ---------- seq789 피처 로드 (로드/라벨=seqdata, 피처조립=features 로 분리) ----------
+def _envset(envf, envc):  # 파일(한 줄 1라벨, # 주석 무시) + 콤마 env 합쳐 소문자 set
+    s = set()
+    f = os.environ.get(envf)
+    if f and os.path.exists(f): s |= {l.strip().lower() for l in open(f, encoding='utf-8') if l.strip() and not l.startswith('#')}
+    s |= {l.strip().lower() for l in os.environ.get(envc, '').split(',') if l.strip()}
+    return s
+
 def load_seq789():
-    metas, packs = [], []
-    for cf in sorted(SEQDIR.glob('sequences_part_*.csv')):
-        z = np.load(cf.with_suffix('.npz')); metas.append(pd.read_csv(cf)); packs.append({k: z[k] for k in z.files})
-    meta = pd.concat(metas, ignore_index=True)
-    A = {k: np.concatenate([p[k] for p in packs], 0) for k in packs[0].keys()}
-    N = len(meta)
-    if IS_LAB:  # canonical: filename→task3 라벨 조인 + 중복제거 + 클래스≥10
-        kmpath = os.environ.get('LAB_LABEL_MAP', str(SEQDIR.resolve().parent / '02_dataset' / 'lab_canon_label.csv'))
-        km = pd.read_csv(kmpath); fn2t = dict(zip(km['filename'].astype(str), km['task3'].astype(str)))
-        bn = meta['pcap'].astype(str).str.split('/').str[-1].str.split('\\').str[-1]
-        lab = bn.map(fn2t)
-        tmp = pd.DataFrame({'bn': bn, 'lab': lab, 'i': np.arange(N)})[lab.notna().to_numpy()].drop_duplicates('bn', keep='first')
-        labc = tmp['lab'].astype(str).str.lower().str.replace(r'\.exe$', '', regex=True)
-        def _loadset(envf, envc):  # 파일(한 줄 1라벨) + 콤마 env 합쳐 소문자 set
-            s = set()
-            f = os.environ.get(envf)
-            if f and os.path.exists(f): s |= {l.strip().lower() for l in open(f, encoding='utf-8') if l.strip() and not l.startswith('#')}
-            s |= {l.strip().lower() for l in os.environ.get(envc, '').split(',') if l.strip()}
-            return s
-        exc = _loadset('LAB_EXCLUDE_FILE', 'LAB_EXCLUDE')      # 완전 제거(측정도구·unknown 등)
-        col = _loadset('LAB_COLLAPSE_FILE', 'LAB_COLLAPSE')    # background 1클래스로 묶기(슈퍼클래스 실험)
-        if col:
-            nb = int(labc.isin(col).sum()); labc = labc.mask(labc.isin(col), '__background__')
-            print(f'[LAB] background 묶음 {len(col)}라벨 → {nb}행 = __background__', flush=True)
-        # 파이프라인 노이즈(prism04 조인) basename 제거 — LAB_NOISE_FILE(한 줄 1 basename)
-        nf = set()
-        nff = os.environ.get('LAB_NOISE_FILE')
-        if nff and os.path.exists(nff): nf = {l.strip() for l in open(nff, encoding='utf-8') if l.strip()}
-        not_noise = ~tmp['bn'].isin(nf) if nf else pd.Series(True, index=tmp.index)
-        # class≥10은 노이즈/제외 적용 '후' 잔존 개수로 계산해야 함(전 개수로 하면 노이즈 빼고 1개 남는 클래스가 stratify 크래시)
-        surv = (~labc.isin(exc)).to_numpy() & not_noise.to_numpy()
-        vc = labc[surv].value_counts(); keep = (surv & labc.isin(vc[vc >= 10].index).to_numpy())
-        if exc: print(f'[LAB] 라벨노이즈 제외 {len(exc)}라벨 → 제거 {int((labc.isin(exc)).sum())}행', flush=True)
-        if nf: print(f'[LAB] 파이프라인노이즈 {len(nf)}basename → 매칭제거 {int(tmp["bn"].isin(nf).sum())}행', flush=True)
-        idx = tmp['i'].to_numpy()[keep]
-        meta = meta.iloc[idx].reset_index(drop=True); A = {k: v[idx] for k, v in A.items()}; N = len(meta)
-        meta['label'] = labc.to_numpy()[keep]
-    if not IS_LAB:  # 비-LAB(CSTNET/Cipher): NOISE_FILE(basename) 파이프라인 노이즈 제거
-        nff = os.environ.get('NOISE_FILE')
-        if nff and os.path.exists(nff):
-            nfset = {l.strip() for l in open(nff, encoding='utf-8') if l.strip()}
-            bn = meta['pcap'].astype(str).str.split('/').str[-1].str.split('\\').str[-1]
-            km = ~bn.isin(nfset)
-            print(f'[{NAME}] 파이프라인노이즈 {len(nfset)}basename → 제거 {int((~km).sum())}행 / {len(meta)}', flush=True)
-            meta = meta[km.to_numpy()].reset_index(drop=True); A = {k: v[km.to_numpy()] for k, v in A.items()}; N = len(meta)
-    m = A['mask'].astype(bool); size = A['packet_size'].astype('f4'); dire = A['direction'].astype('f4')
-    iat = A['iat_ms'].astype('f4'); liat = np.log1p(iat); win = np.log1p(np.maximum(A['tcp_window'].astype('f4'), 0))
-    ret = A['retrans'].astype('f4'); pay = A['payload_size'].astype('f4'); signed = size * dire
-    def agg(a):
-        x = np.where(m, a, np.nan); return np.column_stack([np.nanmean(x, 1), np.nanstd(x, 1), np.nanmin(x, 1), np.nanmax(x, 1), np.nansum(x, 1)])
-    flow = np.column_stack([agg(size), agg(liat), agg(win), agg(pay), ret.sum(1), m.sum(1), (dire > 0).sum(1), (dire < 0).sum(1),
-                            meta[['burst_count', 'longest_burst', 'up_ratio', 'duration_ms', 'mean_iat_ms']].to_numpy('f4')]).astype('f4')
-    chan = np.column_stack([signed, liat, win, ret, pay * dire]).astype('f4')
-    cum = np.column_stack([np.cumsum(dire * m, 1), np.cumsum(signed * m, 1)]).astype('f4')
-    K = 8; bl = np.zeros((N, K), 'f4'); bm = np.zeros(N, 'f4'); bs = np.zeros(N, 'f4')
-    for i in range(N):
-        dd = dire[i][m[i]]
-        if len(dd):
-            idx2 = np.flatnonzero(np.diff(dd) != 0) + 1; runs = np.diff(np.concatenate(([0], idx2, [len(dd)])))
-            bl[i, :min(K, len(runs))] = runs[:K]; bm[i] = runs.mean(); bs[i] = runs.std()
-    burst = np.column_stack([bl, bm, bs]).astype('f4')
-    bi = np.clip((np.abs(size) // 80).astype(int), 0, 19); up = (dire > 0) & m; dn = (dire < 0) & m
-    hu = np.zeros((N, 20), 'f4'); hd = np.zeros((N, 20), 'f4')
-    for b in range(20): hu[:, b] = ((bi == b) & up).sum(1); hd[:, b] = ((bi == b) & dn).sum(1)
-    hist = np.column_stack([hu, hd]).astype('f4')
-    def q(a): x = np.where(m, a, np.nan); return np.nanpercentile(x, [10, 25, 50, 75, 90], 1).T.astype('f4')
-    quant = np.column_stack([q(iat), q(np.abs(size))]).astype('f4')
-    X = np.nan_to_num(np.column_stack([flow, chan, cum, burst, hist, quant]).astype('f4'))
-    lab = meta['label'].astype(str)
-    if os.environ.get('DOMAIN_ONLY') == '1':  # CipherSpectrum: none_<cipher>_<domain> → <domain> (cipher 합침)
-        lab = lab.str.split('_', n=2).str[-1]
-    return X, lab.to_numpy()   # 문자열 라벨 반환 (unknown 필터는 main에서)
+    A, meta, y = seqdata.load_labeled(
+        SEQDIR, IS_LAB,
+        domain_only=(os.environ.get('DOMAIN_ONLY') == '1'),
+        label_map=os.environ.get('LAB_LABEL_MAP'),
+        lab_noise_file=os.environ.get('LAB_NOISE_FILE'),
+        keep=_envset('LAB_KEEP_FILE', 'LAB_KEEP'),
+        exclude=_envset('LAB_EXCLUDE_FILE', 'LAB_EXCLUDE'),
+        collapse=_envset('LAB_COLLAPSE_FILE', 'LAB_COLLAPSE'),
+        noise_file=os.environ.get('NOISE_FILE'),
+        label_exclude=_envset('DOMAIN_EXCLUDE_FILE', 'DOMAIN_EXCLUDE'))  # 최종라벨 제외(Cipher chacha20 오염 등)
+    # FEAT_GROUPS(콤마구분)로 피처 그룹 선택 가능(예: FEAT_GROUPS=flow,quant). 없으면 전체 6그룹=seq789.
+    fg = os.environ.get('FEAT_GROUPS')
+    groups = [g.strip() for g in fg.split(',') if g.strip()] if fg else None
+    X, _names = build_features(A, meta, groups=groups)
+    return X, y   # 문자열 라벨 반환 (unknown 필터는 main에서)
 
 def models():
     # 부스팅 3종은 통일 기본값 위에 TUNED(있으면) 덮어씀. 트리계(DT/RF/ET)는 항상 통일값.
