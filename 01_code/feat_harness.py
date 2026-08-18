@@ -46,11 +46,14 @@ DATASETS = {
 _TUNED = json.load(open(TUNED_PATH, encoding='utf-8')) if os.path.exists(TUNED_PATH) else {}
 
 
+LIGHT = os.environ.get('HARNESS_LIGHT') == '1'  # 1=가벼운 자(uniform n_est=300, 스크리닝용). 0=튜닝(최종).
+
 def lgbm_params(json_key):
-    """튜닝 LightGBM params(고정 尺). 없으면 통일 기본값."""
+    """尺 LightGBM params. LIGHT=1 → uniform 통일값(빠름, 상대비교용). 아니면 튜닝값."""
     p = dict(objective='multiclass', n_estimators=300, num_leaves=63, max_depth=6, learning_rate=.05,
              min_child_samples=30, colsample_bytree=.8, reg_lambda=10, n_jobs=NJ, verbosity=-1, random_state=0)
-    p.update(_TUNED.get(json_key, {}).get('LightGBM(Boost)', {}).get('params', {}))
+    if not LIGHT:
+        p.update(_TUNED.get(json_key, {}).get('LightGBM(Boost)', {}).get('params', {}))
     p['n_jobs'] = NJ
     return p
 
@@ -79,9 +82,12 @@ def get_data(ds):
     return _CACHE[ds]
 
 
-def eval_groups(ds, groups):
-    """ds에서 groups 피처조합으로 단일 split macro-F1/acc. groups=None → 전체 789."""
+def eval_groups(ds, groups, trunc=None):
+    """ds에서 groups 피처조합으로 단일 split macro-F1/acc. groups=None → 전체 789.
+    trunc=K 면 앞 K패킷만 사용(per-packet 배열 [:, :K] 슬라이스) → chan/cum 등 자동 축소."""
     A, meta, y = get_data(ds)
+    if trunc:
+        A = {k: v[:, :trunc] for k, v in A.items()}
     X, names = build_features(A, meta, groups=groups)
     Xtr, Xte, ytr, yte = train_test_split(X, y, test_size=0.2, stratify=y, random_state=RNG_SEED)
     t = time.time()
@@ -90,7 +96,7 @@ def eval_groups(ds, groups):
     pred = clf.predict(Xte)
     f1 = f1_score(yte, pred, average='macro', zero_division=0) * 100
     acc = accuracy_score(yte, pred) * 100
-    print(f'  [{ds}] groups={groups or "ALL"} d={X.shape[1]} F1={f1:.2f} Acc={acc:.2f} ({time.time()-t:.0f}s)', flush=True)
+    print(f'  [{ds}] groups={groups or "ALL"} trunc={trunc or "-"} d={X.shape[1]} F1={f1:.2f} Acc={acc:.2f} ({time.time()-t:.0f}s)', flush=True)
     return dict(f1=round(f1, 3), acc=round(acc, 3), dim=int(X.shape[1]))
 
 
@@ -138,9 +144,47 @@ def run_ablation(datasets):
     print('저장 -> 03_json/feat_ablation.json', flush=True)
 
 
+def run_trunc(datasets, Ks=(100, 50, 30, 20, 15, 10, 5)):
+    """패킷 truncation sweep: 앞 K패킷만으로 전체 피처 F1. compress 최대 레버(chan/cum 축소) 검증."""
+    out = {}
+    for ds in datasets:
+        out[ds] = {}
+        base = None
+        for K in Ks:
+            try:
+                r = eval_groups(ds, None, trunc=K); out[ds][f'K{K}'] = r
+                if K == 100: base = r['f1']
+                elif base is not None: r['dF1'] = round(r['f1'] - base, 3)
+            except Exception as e:
+                print(f'  [{ds}] K{K} 실패: {e}', flush=True); out[ds][f'K{K}'] = dict(error=str(e))
+            json.dump(out, open(BASE / '03_json' / 'feat_trunc.json', 'w', encoding='utf-8'), ensure_ascii=False, indent=2)
+    print('저장 -> 03_json/feat_trunc.json', flush=True)
+
+
+def run_expand(datasets):
+    """expand: 789(baseline) vs 789+각 EXTRA그룹 vs 789+전체EXTRA. F1 델타로 새 그룹 값 판정."""
+    from features import DEFAULT_ORDER, EXTRA
+    specs = {'base789': DEFAULT_ORDER}
+    for g in EXTRA: specs[f'+{g}'] = DEFAULT_ORDER + [g]     # 789에 새 그룹 하나씩
+    specs['+ALL_extra'] = DEFAULT_ORDER + EXTRA             # 789 + 새 그룹 전부
+    out = {}
+    for ds in datasets:
+        out[ds] = {}
+        base = None
+        for name, grp in specs.items():
+            try:
+                r = eval_groups(ds, grp); out[ds][name] = r
+                if name == 'base789': base = r['f1']
+                elif base is not None: r['dF1'] = round(r['f1'] - base, 3)
+            except Exception as e:
+                print(f'  [{ds}] {name} 실패: {e}', flush=True); out[ds][name] = dict(error=str(e))
+            json.dump(out, open(BASE / '03_json' / 'feat_expand.json', 'w', encoding='utf-8'), ensure_ascii=False, indent=2)
+    print('저장 -> 03_json/feat_expand.json', flush=True)
+
+
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument('mode', choices=['importance', 'ablation', 'eval'])
+    ap.add_argument('mode', choices=['importance', 'ablation', 'eval', 'expand', 'trunc'])
     ap.add_argument('--groups', default=None, help='eval모드: 콤마구분 그룹(예 flow,quant)')
     ap.add_argument('--datasets', default='Cipher,CSTNET,LAB')
     a = ap.parse_args()
@@ -149,6 +193,10 @@ def main():
         run_importance(datasets)
     elif a.mode == 'ablation':
         run_ablation(datasets)
+    elif a.mode == 'expand':
+        run_expand(datasets)
+    elif a.mode == 'trunc':
+        run_trunc(datasets)
     elif a.mode == 'eval':
         grp = [g.strip() for g in a.groups.split(',')] if a.groups else None
         for ds in datasets: eval_groups(ds, grp)

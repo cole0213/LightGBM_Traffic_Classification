@@ -125,11 +125,144 @@ def g_quant(R, pcts=(10, 25, 50, 75, 90)):
     return block, names
 
 
-# 그룹 레지스트리. 새 후보 그룹은 여기 등록하되 DEFAULT_ORDER 엔 안 넣음(expand 때 명시적 사용).
+# ================= EXTRA 후보 그룹 (expand 실험용, DEFAULT_ORDER 엔 없음) =================
+# 현 789에 없는 행동 신호. 이미 있는 100패킷 배열에서만 계산(재추출 X). 정체성 무관.
+
+def _masked_moments(a, m):
+    """행별 마스크 skew, kurtosis (분포 모양). sd=0 이면 0."""
+    x = np.where(m, a, np.nan)
+    mu = np.nanmean(x, 1, keepdims=True); sd = np.nanstd(x, 1, keepdims=True)
+    z = np.where(sd > 1e-9, (x - mu) / np.where(sd > 1e-9, sd, 1), 0.0)
+    sk = np.nanmean(z ** 3, 1); ku = np.nanmean(z ** 4, 1) - 3.0
+    return np.nan_to_num(sk).astype('f4'), np.nan_to_num(ku).astype('f4')
+
+
+def g_dirtrans(R):
+    """방향 전이 패턴 (6): up→up/up→dn/dn→up/dn→dn 확률, 전환율, 첫전환 위치. 요청-응답 리듬."""
+    m, dire, N = R['m'], R['dire'], R['N']
+    out = np.zeros((N, 6), 'f4')
+    for i in range(N):
+        d = dire[i][m[i]]
+        n = len(d)
+        if n >= 2:
+            a, b = d[:-1], d[1:]
+            tot = len(a)
+            uu = np.sum((a > 0) & (b > 0)); ud = np.sum((a > 0) & (b < 0))
+            du = np.sum((a < 0) & (b > 0)); dd = np.sum((a < 0) & (b < 0))
+            sw = np.flatnonzero(a != b)
+            out[i, 0] = uu / tot; out[i, 1] = ud / tot; out[i, 2] = du / tot; out[i, 3] = dd / tot
+            out[i, 4] = len(sw) / tot                      # 전환율(turn-taking)
+            out[i, 5] = (sw[0] + 1) / n if len(sw) else 1.0  # 첫 전환까지 위치(정규화)
+    names = ['dt_uu', 'dt_ud', 'dt_du', 'dt_dd', 'dt_switch_rate', 'dt_first_switch']
+    return out, names
+
+
+def g_timing(R):
+    """IAT 분포모양·주기성 (8): skew, kurt, 자기상관 lag1~3, FFT 상위2 파워비, idle비율."""
+    m, iat = R['m'], R['iat']
+    N = R['N']
+    sk, ku = _masked_moments(iat, m)
+    out = np.zeros((N, 6), 'f4')  # ac1,ac2,ac3,fft1,fft2,idle
+    for i in range(N):
+        v = iat[i][m[i]].astype('f8')
+        n = len(v)
+        if n >= 4:
+            vc = v - v.mean(); denom = np.sum(vc * vc) + 1e-12
+            for k in (1, 2, 3):
+                out[i, k - 1] = np.sum(vc[:-k] * vc[k:]) / denom
+            p = np.abs(np.fft.rfft(vc)) ** 2
+            p = p[1:]  # DC 제외
+            if p.size and p.sum() > 0:
+                ps = np.sort(p)[::-1] / p.sum()
+                out[i, 3] = ps[0]
+                out[i, 4] = ps[1] if ps.size > 1 else 0.0
+            med = np.median(v)
+            out[i, 5] = np.mean(v > 3 * med) if med > 0 else 0.0  # idle(큰 gap) 비율
+    block = np.column_stack([sk, ku, out]).astype('f4')
+    names = ['tm_skew', 'tm_kurt', 'tm_ac1', 'tm_ac2', 'tm_ac3', 'tm_fft1', 'tm_fft2', 'tm_idle']
+    return np.nan_to_num(block), names
+
+
+def g_sizeshape(R, nbin=20, binw=80):
+    """크기 분포 모양·다양성 (7): skew, kurt, 엔트로피, 고유버킷비, 최빈비, 소패킷비, 대패킷비."""
+    m, size, N = R['m'], R['size'], R['N']
+    asz = np.abs(size)
+    sk, ku = _masked_moments(asz, m)
+    bi = np.clip((asz // binw).astype(int), 0, nbin - 1)
+    cnt = np.zeros((N, nbin), 'f8')
+    for b in range(nbin):
+        cnt[:, b] = ((bi == b) & m).sum(1)
+    nv = cnt.sum(1, keepdims=True); p = cnt / np.where(nv > 0, nv, 1)
+    ent = -np.sum(np.where(p > 0, p * np.log(p + 1e-12), 0.0), 1)      # 크기 엔트로피
+    uniq = (cnt > 0).sum(1) / float(nbin)                              # 고유버킷 비율
+    mode = cnt.max(1) / np.where(nv[:, 0] > 0, nv[:, 0], 1)            # 최빈버킷 비율
+    small = ((asz < 100) & m).sum(1) / np.where(nv[:, 0] > 0, nv[:, 0], 1)   # ACK류 비율
+    big = ((asz > 1400) & m).sum(1) / np.where(nv[:, 0] > 0, nv[:, 0], 1)    # MTU급 비율
+    block = np.column_stack([sk, ku, ent, uniq, mode, small, big]).astype('f4')
+    names = ['ss_skew', 'ss_kurt', 'ss_entropy', 'ss_uniq', 'ss_mode', 'ss_small', 'ss_big']
+    return np.nan_to_num(block), names
+
+
+def _cv(a, m):
+    """행별 변동계수 std/mean (스케일 불변). mean~0 이면 0."""
+    x = np.where(m, a, np.nan)
+    mu = np.nanmean(x, 1); sd = np.nanstd(x, 1)
+    return np.nan_to_num(np.where(np.abs(mu) > 1e-9, sd / np.where(np.abs(mu) > 1e-9, mu, 1), 0.0)).astype('f4')
+
+
+def g_norm(R):
+    """정규화(스케일 불변) 피처 (5): iat·size·pay·win 변동계수 + 전반부 시간비중. 환경/시점 드리프트 강건."""
+    m, iat, size, pay, win, N = R['m'], R['iat'], R['size'], R['pay'], R['win'], R['N']
+    asz = np.abs(size)
+    cv_iat, cv_sz, cv_pay, cv_win = _cv(iat, m), _cv(asz, m), _cv(pay, m), _cv(win, m)
+    # 전반 50% 패킷의 IAT 비중(타이밍 앞/뒤 쏠림)
+    P = R['P']; half = P // 2
+    im = np.where(m, iat, 0.0)
+    early = im[:, :half].sum(1); tot = im.sum(1)
+    early_frac = np.nan_to_num(np.where(tot > 0, early / np.where(tot > 0, tot, 1), 0.0)).astype('f4')
+    block = np.column_stack([cv_iat, cv_sz, cv_pay, cv_win, early_frac]).astype('f4')
+    names = ['nm_cv_iat', 'nm_cv_size', 'nm_cv_pay', 'nm_cv_win', 'nm_iat_early_frac']
+    return np.nan_to_num(block), names
+
+
+def g_winflow(R):
+    """window 동역학 (4): window diff 평균/표준편차, zero-window 비율, window 감소횟수비."""
+    m, N = R['m'], R['N']
+    win = R['win']  # 이미 log1p(window)
+    wm = np.where(m, win, np.nan)
+    dwin = np.diff(wm, axis=1)
+    dmean = np.nan_to_num(np.nanmean(dwin, 1)).astype('f4')
+    dstd = np.nan_to_num(np.nanstd(dwin, 1)).astype('f4')
+    zero = ((win <= 1e-6) & m).sum(1) / np.where(m.sum(1) > 0, m.sum(1), 1)  # log1p(0)=0
+    dec = np.nan_to_num((dwin < 0).sum(1) / np.where(m.sum(1) > 1, m.sum(1) - 1, 1)).astype('f4')
+    block = np.column_stack([dmean, dstd, zero.astype('f4'), dec]).astype('f4')
+    names = ['wf_dmean', 'wf_dstd', 'wf_zero', 'wf_dec']
+    return np.nan_to_num(block), names
+
+
+def g_payload(R):
+    """payload 구조 (4): 순수ACK(payload=0) 비율, payload/size 비율 평균/표준편차, payload>0 비율."""
+    m, pay, size, N = R['m'], R['pay'], R['size'], R['N']
+    asz = np.abs(size); nv = np.where(m.sum(1) > 0, m.sum(1), 1)
+    ack = ((pay <= 0) & m).sum(1) / nv
+    ratio = np.where((asz > 0) & m, pay / np.where(asz > 0, asz, 1), np.nan)
+    rmean = np.nan_to_num(np.nanmean(ratio, 1)).astype('f4')
+    rstd = np.nan_to_num(np.nanstd(ratio, 1)).astype('f4')
+    haspay = ((pay > 0) & m).sum(1) / nv
+    block = np.column_stack([ack.astype('f4'), rmean, rstd, haspay.astype('f4')]).astype('f4')
+    names = ['pl_ack_ratio', 'pl_pratio_mean', 'pl_pratio_std', 'pl_haspay']
+    return np.nan_to_num(block), names
+
+
+# 그룹 레지스트리. 기본 6그룹(seq789) + EXTRA 후보 6그룹. DEFAULT_ORDER 엔 기본만.
 GROUPS = {
     'flow': g_flow, 'chan': g_chan, 'cum': g_cum,
     'burst': g_burst, 'hist': g_hist, 'quant': g_quant,
+    # EXTRA 후보(expand): 명시적으로 켜야 조립됨
+    'dirtrans': g_dirtrans, 'timing': g_timing, 'sizeshape': g_sizeshape,
+    'norm': g_norm, 'winflow': g_winflow, 'payload': g_payload,
 }
+EXTRA = ['dirtrans', 'timing', 'sizeshape', 'norm', 'winflow', 'payload']
 
 
 def build_features(A, meta, groups=None):
