@@ -66,5 +66,34 @@
       "val_macro_f1": 90.222,
       "n_trials": 100
     }
+  },
+  "LAB": {
+    "LightGBM(Boost)": {
+      "params": {
+        "n_estimators": 1100,
+        "num_leaves": 177,
+        "max_depth": 7,
+        "learning_rate": 0.07648483848879568,
+        "min_child_samples": 43,
+        "colsample_bytree": 0.5987371500214815,
+        "subsample": 0.8292116078403557,
+        "reg_lambda": 7.065886504738153
+      },
+      "val_macro_f1": 71.322,
+      "n_trials": 60
+    },
+    "XGBoost(Boost)": {
+      "params": {
+        "n_estimators": 1000,
+        "max_depth": 9,
+        "learning_rate": 0.21463856449072558,
+        "min_child_weight": 2,
+        "colsample_bytree": 0.7359197043631083,
+        "subsample": 0.9679173372422242,
+        "reg_lambda": 0.04466300551764937
+      },
+      "val_macro_f1": 71.706,
+      "n_trials": 60
+    }
   }
 }
