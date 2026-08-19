@@ -164,6 +164,41 @@ def run_trunc(datasets, Ks=(100, 50, 30, 20, 15, 10, 5)):
     print('저장 -> 03_json/feat_trunc.json', flush=True)
 
 
+def run_select(datasets, Ns=(250, 200, 150, 120, 100, 80, 60, 40)):
+    """compact core sweep: K30 피처의 importance를 3데이터셋 평균으로 통합랭킹 →
+    top-N 공통 core(하나의 셋)로 각 데이터셋 F1. 무릎점=최종 core 크기."""
+    from features import build_features, DEFAULT_ORDER
+    K = TRUNC or 30
+    splits, imps, names_ref = {}, [], None
+    for ds in datasets:
+        A, meta, y = get_data(ds)
+        A = {k: v[:, :K] for k, v in A.items()}
+        X, names = build_features(A, meta)  # K30 전체 그룹
+        Xtr, Xte, ytr, yte = train_test_split(X, y, test_size=0.2, stratify=y, random_state=RNG_SEED)
+        clf = lgb.LGBMClassifier(**lgbm_params(DATASETS[ds]['json_key']), importance_type='gain')
+        clf.fit(Xtr, ytr)
+        imp = clf.feature_importances_.astype(float); imp = imp / (imp.sum() + 1e-12)
+        imps.append(imp); splits[ds] = (Xtr, Xte, ytr, yte); names_ref = names
+        f1full = f1_score(yte, clf.predict(Xte), average='macro', zero_division=0) * 100
+        print(f'[{ds}] K{K} full d={X.shape[1]} F1={f1full:.2f} — importance 계산', flush=True)
+    avg = np.mean(imps, 0); order = np.argsort(-avg)   # 3데이터셋 평균 importance 통합랭킹
+    out = {'K': K, 'ranking_top40': [names_ref[i] for i in order[:40]], 'full': {}}
+    for ds in datasets:
+        Xtr, Xte, ytr, yte = splits[ds]
+        out['full'][ds] = dict(f1=round(f1_score(yte, lgb.LGBMClassifier(**lgbm_params(DATASETS[ds]['json_key'])).fit(Xtr, ytr).predict(Xte), average='macro', zero_division=0) * 100, 3), dim=int(Xtr.shape[1]))
+    for N in Ns:
+        sel = order[:N]; out[f'N{N}'] = {}
+        for ds in datasets:
+            Xtr, Xte, ytr, yte = splits[ds]
+            clf = lgb.LGBMClassifier(**lgbm_params(DATASETS[ds]['json_key']))
+            clf.fit(Xtr[:, sel], ytr)
+            f1 = f1_score(yte, clf.predict(Xte[:, sel]), average='macro', zero_division=0) * 100
+            out[f'N{N}'][ds] = round(f1, 3)
+            print(f'  N={N} [{ds}] F1={f1:.2f}', flush=True)
+        json.dump(out, open(BASE / '03_json' / 'feat_select.json', 'w', encoding='utf-8'), ensure_ascii=False, indent=2)
+    print('저장 -> 03_json/feat_select.json', flush=True)
+
+
 def run_expand(datasets):
     """expand: 789(baseline) vs 789+각 EXTRA그룹 vs 789+전체EXTRA. F1 델타로 새 그룹 값 판정."""
     from features import DEFAULT_ORDER, EXTRA
@@ -187,7 +222,7 @@ def run_expand(datasets):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument('mode', choices=['importance', 'ablation', 'eval', 'expand', 'trunc'])
+    ap.add_argument('mode', choices=['importance', 'ablation', 'eval', 'expand', 'trunc', 'select'])
     ap.add_argument('--groups', default=None, help='eval모드: 콤마구분 그룹(예 flow,quant)')
     ap.add_argument('--datasets', default='Cipher,CSTNET,LAB')
     a = ap.parse_args()
@@ -200,6 +235,8 @@ def main():
         run_expand(datasets)
     elif a.mode == 'trunc':
         run_trunc(datasets)
+    elif a.mode == 'select':
+        run_select(datasets)
     elif a.mode == 'eval':
         grp = [g.strip() for g in a.groups.split(',')] if a.groups else None
         for ds in datasets: eval_groups(ds, grp)
