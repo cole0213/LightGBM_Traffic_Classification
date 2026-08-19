@@ -47,6 +47,7 @@ _TUNED = json.load(open(TUNED_PATH, encoding='utf-8')) if os.path.exists(TUNED_P
 
 
 LIGHT = os.environ.get('HARNESS_LIGHT') == '1'  # 1=가벼운 자(uniform n_est=300, 스크리닝용). 0=튜닝(최종).
+TRUNC = int(os.environ.get('HARNESS_TRUNC', '0') or 0)  # >0 이면 모든 eval 기본 앞K패킷(ablation/expand 공통 baseline)
 
 def lgbm_params(json_key):
     """尺 LightGBM params. LIGHT=1 → uniform 통일값(빠름, 상대비교용). 아니면 튜닝값."""
@@ -86,6 +87,8 @@ def eval_groups(ds, groups, trunc=None):
     """ds에서 groups 피처조합으로 단일 split macro-F1/acc. groups=None → 전체 789.
     trunc=K 면 앞 K패킷만 사용(per-packet 배열 [:, :K] 슬라이스) → chan/cum 등 자동 축소."""
     A, meta, y = get_data(ds)
+    if trunc is None and TRUNC:
+        trunc = TRUNC  # 전역 기본 트렁크(ablation/expand 공통 K baseline)
     if trunc:
         A = {k: v[:, :trunc] for k, v in A.items()}
     X, names = build_features(A, meta, groups=groups)
