@@ -124,8 +124,9 @@ def main():
     allk = [('LightGBM', 'LightGBM(Boost)'), ('XGBoost', 'XGBoost(Boost)'), ('CatBoost', 'CatBoost(Boost)')]
     for kind, mkey in [(k, m) for k, m in allk if k.lower() in MODELS]:
         st = time.time()
-        storage = f'sqlite:///{OUT.parent}/optuna_{NAME}_{kind}.db'  # study별 db 분리 → CPU/GPU 프로세스 동시 실행 시 락 회피
-        study = optuna.create_study(direction='maximize', study_name=f'{NAME}_{kind}', storage=storage, load_if_exists=True)
+        tag = os.environ.get('TUNE_TAG', '')  # 피처셋 다르면 태그로 db 분리(예 _core=299) → 789 study와 안 섞임
+        storage = f'sqlite:///{OUT.parent}/optuna_{NAME}_{kind}{tag}.db'  # study별 db 분리 → CPU/GPU 동시실행 락 회피
+        study = optuna.create_study(direction='maximize', study_name=f'{NAME}_{kind}{tag}', storage=storage, load_if_exists=True)
         study.optimize(make_objective(kind, Xtr, ytr), n_trials=TRIALS, show_progress_bar=False)
         res[NAME][mkey] = {'params': study.best_params, 'val_macro_f1': round(study.best_value * 100, 3), 'n_trials': len(study.trials)}
         json.dump(res, open(OUT, 'w', encoding='utf-8'), ensure_ascii=False, indent=2)
