@@ -265,8 +265,9 @@ GROUPS = {
 EXTRA = ['dirtrans', 'timing', 'sizeshape', 'norm', 'winflow', 'payload']
 
 
-def build_features(A, meta, groups=None):
+def build_features(A, meta, groups=None, select=None):
     """선택 그룹으로 피처행렬 조립. groups=None → DEFAULT_ORDER(전체 6그룹=seq789).
+    select=이름 iterable 주면 그 이름의 컬럼만 남김(compact core용, 순서=select 순서 유지).
     반환: (X float32 (N,D), names list[str]). NaN/inf 는 0 으로(기존 nan_to_num 동일)."""
     order = list(groups) if groups is not None else DEFAULT_ORDER
     R = prepare_raw(A, meta)
@@ -277,4 +278,8 @@ def build_features(A, meta, groups=None):
         blk, nm = GROUPS[g](R)
         blocks.append(blk); names.extend(nm)
     X = np.nan_to_num(np.column_stack(blocks).astype('f4'))
+    if select is not None:  # 이름리스트로 필터(compact core). 없는 이름은 무시, select 순서 유지.
+        pos = {n: i for i, n in enumerate(names)}
+        idx = [pos[s] for s in select if s in pos]
+        X = X[:, idx]; names = [names[i] for i in idx]
     return X, names

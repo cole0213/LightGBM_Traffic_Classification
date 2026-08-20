@@ -1,0 +1,99 @@
+{
+  "K": 30,
+  "ranking_top40": [
+    "chan_win_p000",
+    "chan_liat_p001",
+    "quant_iat_p75",
+    "flow_win_min",
+    "flow_win_std",
+    "cum_signed_p011",
+    "chan_signed_p003",
+    "cum_signed_p004",
+    "flow_duration_ms",
+    "chan_signed_p009",
+    "flow_liat_max",
+    "chan_liat_p007",
+    "flow_liat_mean",
+    "quant_iat_p90",
+    "hist_dn_b02",
+    "flow_win_max",
+    "cum_signed_p003",
+    "hist_up_b07",
+    "flow_mean_iat_ms",
+    "cum_signed_p002",
+    "chan_win_p001",
+    "flow_win_mean",
+    "chan_signed_p007",
+    "chan_paydir_p000",
+    "flow_size_max",
+    "hist_dn_b01",
+    "cum_signed_p007",
+    "cum_signed_p009",
+    "quant_size_p10",
+    "cum_signed_p015",
+    "cum_signed_p013",
+    "chan_win_p003",
+    "chan_signed_p011",
+    "cum_signed_p029",
+    "hist_up_b01",
+    "cum_signed_p005",
+    "hist_dn_b04",
+    "flow_pay_sum",
+    "cum_signed_p008",
+    "chan_signed_p000"
+  ],
+  "full": {
+    "Cipher": {
+      "f1": 99.308,
+      "dim": 299
+    },
+    "CSTNET": {
+      "f1": 90.055,
+      "dim": 299
+    },
+    "LAB": {
+      "f1": 68.801,
+      "dim": 299
+    }
+  },
+  "N250": {
+    "Cipher": 99.329,
+    "CSTNET": 89.922,
+    "LAB": 68.62
+  },
+  "N200": {
+    "Cipher": 99.31,
+    "CSTNET": 89.919,
+    "LAB": 68.609
+  },
+  "N150": {
+    "Cipher": 99.252,
+    "CSTNET": 90.068,
+    "LAB": 68.984
+  },
+  "N120": {
+    "Cipher": 99.275,
+    "CSTNET": 90.134,
+    "LAB": 68.814
+  },
+  "N100": {
+    "Cipher": 99.196,
+    "CSTNET": 89.914,
+    "LAB": 69.637
+  },
+  "N80": {
+    "Cipher": 99.185,
+    "CSTNET": 90.068,
+    "LAB": 68.763
+  },
+  "N60": {
+    "Cipher": 99.128,
+    "CSTNET": 90.057,
+    "LAB": 68.696
+  },
+  "N40": {
+    "Cipher": 99.1,
+    "CSTNET": 89.995,
+    "LAB": 69.347
+  }
+}

@@ -164,6 +164,33 @@ def run_trunc(datasets, Ks=(100, 50, 30, 20, 15, 10, 5)):
     print('저장 -> 03_json/feat_trunc.json', flush=True)
 
 
+BASE289 = ['flow', 'chan', 'cum', 'hist', 'quant']  # 정본 seq-core 그룹(burst 죽어서 제외)
+
+def run_coredump(datasets, Ns=(100, 60)):
+    """289 base(K30, burst제외)에서 3데이터셋 통합 importance 랭킹 → core{N} 이름리스트 파일 저장.
+    이후 FEAT_SELECT=core{N}_features.txt 로 compact core 골라 씀."""
+    from features import build_features
+    K = TRUNC or 30
+    imps, names_ref = [], None
+    for ds in datasets:
+        A, meta, y = get_data(ds); A = {k: v[:, :K] for k, v in A.items()}
+        X, names = build_features(A, meta, groups=BASE289)
+        Xtr, Xte, ytr, yte = train_test_split(X, y, test_size=0.2, stratify=y, random_state=RNG_SEED)
+        clf = lgb.LGBMClassifier(**lgbm_params(DATASETS[ds]['json_key']), importance_type='gain')
+        clf.fit(Xtr, ytr)
+        imp = clf.feature_importances_.astype(float); imp = imp / (imp.sum() + 1e-12); imps.append(imp); names_ref = names
+        print(f'[{ds}] K{K} base289 d={X.shape[1]} importance 계산', flush=True)
+    avg = np.mean(imps, 0); order = np.argsort(-avg)
+    dd = BASE / '02_dataset'
+    with open(dd / 'core_ranking.txt', 'w', encoding='utf-8') as f:
+        for i in order: f.write(f'{names_ref[i]}\n')
+    for N in Ns:
+        with open(dd / f'core{N}_features.txt', 'w', encoding='utf-8') as f:
+            for i in order[:N]: f.write(f'{names_ref[i]}\n')
+        print(f'저장 -> 02_dataset/core{N}_features.txt ({N}개)', flush=True)
+    print('저장 -> 02_dataset/core_ranking.txt (전체 랭킹)', flush=True)
+
+
 def run_select(datasets, Ns=(250, 200, 150, 120, 100, 80, 60, 40)):
     """compact core sweep: K30 피처의 importance를 3데이터셋 평균으로 통합랭킹 →
     top-N 공통 core(하나의 셋)로 각 데이터셋 F1. 무릎점=최종 core 크기."""
@@ -222,7 +249,7 @@ def run_expand(datasets):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument('mode', choices=['importance', 'ablation', 'eval', 'expand', 'trunc', 'select'])
+    ap.add_argument('mode', choices=['importance', 'ablation', 'eval', 'expand', 'trunc', 'select', 'coredump'])
     ap.add_argument('--groups', default=None, help='eval모드: 콤마구분 그룹(예 flow,quant)')
     ap.add_argument('--datasets', default='Cipher,CSTNET,LAB')
     a = ap.parse_args()
@@ -237,6 +264,8 @@ def main():
         run_trunc(datasets)
     elif a.mode == 'select':
         run_select(datasets)
+    elif a.mode == 'coredump':
+        run_coredump(datasets)
     elif a.mode == 'eval':
         grp = [g.strip() for g in a.groups.split(',')] if a.groups else None
         for ds in datasets: eval_groups(ds, grp)

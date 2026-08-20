@@ -53,10 +53,21 @@ def load_seq789():
         collapse=_envset('LAB_COLLAPSE_FILE', 'LAB_COLLAPSE'),
         noise_file=os.environ.get('NOISE_FILE'),
         label_exclude=_envset('DOMAIN_EXCLUDE_FILE', 'DOMAIN_EXCLUDE'))  # 최종라벨 제외(Cipher chacha20 오염 등)
-    # FEAT_GROUPS(콤마구분)로 피처 그룹 선택 가능(예: FEAT_GROUPS=flow,quant). 없으면 전체 6그룹=seq789.
+    # FEAT_TRUNC=K → 앞 K패킷만 사용(정본 seq-core는 K30). per-packet 배열 슬라이스.
+    ft = int(os.environ.get('FEAT_TRUNC', '0') or 0)
+    if ft:
+        A = {k: v[:, :ft] for k, v in A.items()}
+    # FEAT_GROUPS(콤마구분)로 그룹 선택(예: flow,chan,cum,hist,quant=289 base). 없으면 전체 6그룹.
     fg = os.environ.get('FEAT_GROUPS')
     groups = [g.strip() for g in fg.split(',') if g.strip()] if fg else None
-    X, _names = build_features(A, meta, groups=groups)
+    # FEAT_SELECT=파일 → 그 이름리스트 컬럼만(compact core: core60/core100). 그룹은 base 전체 조립 후 필터.
+    sel = None
+    sf = os.environ.get('FEAT_SELECT')
+    if sf and os.path.exists(sf):
+        sel = [l.strip() for l in open(sf, encoding='utf-8') if l.strip() and not l.startswith('#')]
+        if groups is None: groups = ['flow', 'chan', 'cum', 'hist', 'quant']  # 289 base(burst 제외)에서 골라냄
+    X, names = build_features(A, meta, groups=groups, select=sel)
+    if sel: print(f'[{NAME}] FEAT_SELECT {len(sel)}개 요청 → 실제 {X.shape[1]}개 피처', flush=True)
     return X, y   # 문자열 라벨 반환 (unknown 필터는 main에서)
 
 def models():
