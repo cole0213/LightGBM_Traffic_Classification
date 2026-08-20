@@ -13,6 +13,16 @@ from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import f1_score
 import optuna
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import seqdata  # bias_variance와 공유하는 로드/라벨링
+from features import build_features  # 피처 조립(모듈화)
+
+def _envset(envf, envc):  # 파일(# 주석무시) + 콤마 env 합쳐 소문자 set
+    s = set()
+    f = os.environ.get(envf)
+    if f and os.path.exists(f): s |= {l.strip().lower() for l in open(f, encoding='utf-8') if l.strip() and not l.startswith('#')}
+    s |= {l.strip().lower() for l in os.environ.get(envc, '').split(',') if l.strip()}
+    return s
 
 NAME = sys.argv[1]; SEQDIR = Path(sys.argv[2]); OUT = Path(sys.argv[3]); IS_LAB = '--lab' in sys.argv
 TRIALS = int(sys.argv[sys.argv.index('--trials') + 1]) if '--trials' in sys.argv else 50
@@ -27,73 +37,34 @@ RNG = 42
 
 
 def load_xy():
-    """bias_variance.load_seq789 + main 전처리와 동일하게 X, y(정수라벨) 생성."""
-    metas, packs = [], []
-    for cf in sorted(SEQDIR.glob('sequences_part_*.csv')):
-        z = np.load(cf.with_suffix('.npz')); metas.append(pd.read_csv(cf)); packs.append({k: z[k] for k in z.files})
-    meta = pd.concat(metas, ignore_index=True)
-    A = {k: np.concatenate([p[k] for p in packs], 0) for k in packs[0].keys()}
-    N = len(meta)
-    if IS_LAB:
-        kmpath = os.environ.get('LAB_LABEL_MAP', str(SEQDIR.resolve().parent / '02_dataset' / 'lab_canon_label.csv'))
-        km = pd.read_csv(kmpath); fn2t = dict(zip(km['filename'].astype(str), km['task3'].astype(str)))
-        bn = meta['pcap'].astype(str).str.split('/').str[-1].str.split('\\').str[-1]
-        lab = bn.map(fn2t)
-        tmp = pd.DataFrame({'bn': bn, 'lab': lab, 'i': np.arange(N)})[lab.notna().to_numpy()].drop_duplicates('bn', keep='first')
-        labc = tmp['lab'].astype(str).str.lower().str.replace(r'\.exe$', '', regex=True)
-        nf = set()
-        nff = os.environ.get('LAB_NOISE_FILE')
-        if nff and os.path.exists(nff): nf = {l.strip() for l in open(nff, encoding='utf-8') if l.strip()}
-        not_noise = (~tmp['bn'].isin(nf)).to_numpy() if nf else np.ones(len(tmp), bool)
-        # class≥10은 노이즈 제거 후 개수로 (전 개수로 하면 1개짜리 클래스 남아 stratify 크래시)
-        vc = labc[not_noise].value_counts(); keep = (not_noise & labc.isin(vc[vc >= 10].index).to_numpy())
-        if nf: print(f'[LAB] 노이즈 {len(nf)}basename → 제거 {int(tmp["bn"].isin(nf).sum())}행', flush=True)
-        idx = tmp['i'].to_numpy()[keep]
-        meta = meta.iloc[idx].reset_index(drop=True); A = {k: v[idx] for k, v in A.items()}; N = len(meta)
-        meta['label'] = labc.to_numpy()[keep]
-    if not IS_LAB:  # 비-LAB: NOISE_FILE(basename) 노이즈 제거
-        nff = os.environ.get('NOISE_FILE')
-        if nff and os.path.exists(nff):
-            nfset = {l.strip() for l in open(nff, encoding='utf-8') if l.strip()}
-            bn2 = meta['pcap'].astype(str).str.split('/').str[-1].str.split('\\').str[-1]
-            km2 = (~bn2.isin(nfset)).to_numpy()
-            meta = meta[km2].reset_index(drop=True); A = {k: v[km2] for k, v in A.items()}; N = len(meta)
-            print(f'[{NAME}] 노이즈 {len(nfset)}basename → 제거 {int((~km2).sum())}행', flush=True)
-    m = A['mask'].astype(bool); size = A['packet_size'].astype('f4'); dire = A['direction'].astype('f4')
-    iat = A['iat_ms'].astype('f4'); liat = np.log1p(iat); win = np.log1p(np.maximum(A['tcp_window'].astype('f4'), 0))
-    ret = A['retrans'].astype('f4'); pay = A['payload_size'].astype('f4'); signed = size * dire
-    def agg(a):
-        x = np.where(m, a, np.nan); return np.column_stack([np.nanmean(x, 1), np.nanstd(x, 1), np.nanmin(x, 1), np.nanmax(x, 1), np.nansum(x, 1)])
-    flow = np.column_stack([agg(size), agg(liat), agg(win), agg(pay), ret.sum(1), m.sum(1), (dire > 0).sum(1), (dire < 0).sum(1),
-                            meta[['burst_count', 'longest_burst', 'up_ratio', 'duration_ms', 'mean_iat_ms']].to_numpy('f4')]).astype('f4')
-    chan = np.column_stack([signed, liat, win, ret, pay * dire]).astype('f4')
-    cum = np.column_stack([np.cumsum(dire * m, 1), np.cumsum(signed * m, 1)]).astype('f4')
-    K = 8; bl = np.zeros((N, K), 'f4'); bm = np.zeros(N, 'f4'); bs = np.zeros(N, 'f4')
-    for i in range(N):
-        dd = dire[i][m[i]]
-        if len(dd):
-            idx2 = np.flatnonzero(np.diff(dd) != 0) + 1; runs = np.diff(np.concatenate(([0], idx2, [len(dd)])))
-            bl[i, :min(K, len(runs))] = runs[:K]; bm[i] = runs.mean(); bs[i] = runs.std()
-    burst = np.column_stack([bl, bm, bs]).astype('f4')
-    bi = np.clip((np.abs(size) // 80).astype(int), 0, 19); up = (dire > 0) & m; dn = (dire < 0) & m
-    hu = np.zeros((N, 20), 'f4'); hd = np.zeros((N, 20), 'f4')
-    for b in range(20): hu[:, b] = ((bi == b) & up).sum(1); hd[:, b] = ((bi == b) & dn).sum(1)
-    hist = np.column_stack([hu, hd]).astype('f4')
-    def q(a): x = np.where(m, a, np.nan); return np.nanpercentile(x, [10, 25, 50, 75, 90], 1).T.astype('f4')
-    quant = np.column_stack([q(iat), q(np.abs(size))]).astype('f4')
-    X = np.nan_to_num(np.column_stack([flow, chan, cum, burst, hist, quant]).astype('f4'))
-    lab = meta['label'].astype(str)
-    if os.environ.get('DOMAIN_ONLY') == '1':
-        lab = lab.str.split('_', n=2).str[-1]
-    ylab = lab.to_numpy()
-    # 전처리(=bias_variance.main): unknown 제거 → 서브샘플 → 희소클래스 제거 → 인코딩
-    UNK = {'', 'nan', 'none', 'unknown', 'unk', '__unk__'}
-    okm = ~pd.Series(ylab).astype(str).str.strip().str.lower().isin(UNK).to_numpy()
-    X, ylab = X[okm], ylab[okm]
+    """bias_variance와 '동일한' 로드/라벨/피처/전처리로 X, y(정수라벨) 생성.
+    seqdata.load_labeled + build_features 공유 → FEAT_TRUNC(K30)·FEAT_SELECT(core)·라벨정제 동일 반영."""
+    A, meta, ylab = seqdata.load_labeled(
+        SEQDIR, IS_LAB,
+        domain_only=(os.environ.get('DOMAIN_ONLY') == '1'),
+        label_map=os.environ.get('LAB_LABEL_MAP'),
+        lab_noise_file=os.environ.get('LAB_NOISE_FILE'),
+        keep=_envset('LAB_KEEP_FILE', 'LAB_KEEP'),
+        exclude=_envset('LAB_EXCLUDE_FILE', 'LAB_EXCLUDE'),
+        collapse=_envset('LAB_COLLAPSE_FILE', 'LAB_COLLAPSE'),
+        noise_file=os.environ.get('NOISE_FILE'),
+        label_exclude=_envset('DOMAIN_EXCLUDE_FILE', 'DOMAIN_EXCLUDE'))
+    ft = int(os.environ.get('FEAT_TRUNC', '0') or 0)   # 앞 K패킷(정본 K30)
+    if ft:
+        A = {k: v[:, :ft] for k, v in A.items()}
+    fg = os.environ.get('FEAT_GROUPS')
+    groups = [g.strip() for g in fg.split(',') if g.strip()] if fg else None
+    sel = None
+    sf = os.environ.get('FEAT_SELECT')                 # compact core(core60/100) 이름리스트
+    if sf and os.path.exists(sf):
+        sel = [l.strip() for l in open(sf, encoding='utf-8') if l.strip() and not l.startswith('#')]
+    X, _names = build_features(A, meta, groups=groups, select=sel)
+    # 전처리(=bias_variance.main): 서브샘플 → 희소클래스(≥max(10,B)) 제거 → 인코딩
     if SUB > 0 and len(X) > SUB:
         idx, _ = train_test_split(np.arange(len(X)), train_size=SUB, random_state=RNG, stratify=ylab); X, ylab = X[idx], ylab[idx]
     s = pd.Series(ylab); vc = s.value_counts(); ok = s.isin(vc[vc >= max(10, B_MIN)].index).to_numpy()
     X = X[ok]; y = LabelEncoder().fit_transform(ylab[ok])
+    print(f'[{NAME}] tune X={X.shape} classes={len(np.unique(y))}', flush=True)
     return X, y
 
 
