@@ -65,7 +65,7 @@ def load_seq789():
     sf = os.environ.get('FEAT_SELECT')
     if sf and os.path.exists(sf):
         sel = [l.strip() for l in open(sf, encoding='utf-8') if l.strip() and not l.startswith('#')]
-        if groups is None: groups = ['flow', 'chan', 'cum', 'hist', 'quant']  # 289 base(burst 제외)에서 골라냄
+        # groups None → build_features 기본(6그룹 299)에서 이름으로 골라냄(정본과 정합)
     X, names = build_features(A, meta, groups=groups, select=sel)
     if sel: print(f'[{NAME}] FEAT_SELECT {len(sel)}개 요청 → 실제 {X.shape[1]}개 피처', flush=True)
     return X, y   # 문자열 라벨 반환 (unknown 필터는 main에서)

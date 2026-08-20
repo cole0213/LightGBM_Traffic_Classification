@@ -164,17 +164,17 @@ def run_trunc(datasets, Ks=(100, 50, 30, 20, 15, 10, 5)):
     print('저장 -> 03_json/feat_trunc.json', flush=True)
 
 
-BASE289 = ['flow', 'chan', 'cum', 'hist', 'quant']  # 정본 seq-core 그룹(burst 죽어서 제외)
+BASE_CORE = ['flow', 'chan', 'cum', 'burst', 'hist', 'quant']  # 정본 seq-core = K30 전체 6그룹(299). burst도 유지(빼면 2/3 나빠짐).
 
 def run_coredump(datasets, Ns=(100, 60)):
-    """289 base(K30, burst제외)에서 3데이터셋 통합 importance 랭킹 → core{N} 이름리스트 파일 저장.
-    이후 FEAT_SELECT=core{N}_features.txt 로 compact core 골라 씀."""
+    """정본 299(K30, 6그룹)에서 3데이터셋 통합 importance 랭킹 → core{N} 이름리스트 파일 저장.
+    burst는 importance 최하위라 compact엔 거의 안 뽑히지만 pool엔 포함(정본과 정합)."""
     from features import build_features
     K = TRUNC or 30
     imps, names_ref = [], None
     for ds in datasets:
         A, meta, y = get_data(ds); A = {k: v[:, :K] for k, v in A.items()}
-        X, names = build_features(A, meta, groups=BASE289)
+        X, names = build_features(A, meta, groups=BASE_CORE)
         Xtr, Xte, ytr, yte = train_test_split(X, y, test_size=0.2, stratify=y, random_state=RNG_SEED)
         clf = lgb.LGBMClassifier(**lgbm_params(DATASETS[ds]['json_key']), importance_type='gain')
         clf.fit(Xtr, ytr)
