@@ -1,0 +1,89 @@
+{
+  "CipherSpectrum": {
+    "LightGBM(Boost)": {
+      "params": {
+        "n_estimators": 300,
+        "num_leaves": 25,
+        "max_depth": 11,
+        "learning_rate": 0.04624296123720736,
+        "min_child_samples": 31,
+        "colsample_bytree": 0.5570083762609477,
+        "subsample": 0.9146240222028874,
+        "reg_lambda": 0.005875832810971016
+      },
+      "val_macro_f1": 99.469,
+      "n_trials": 60
+    },
+    "XGBoost(Boost)": {
+      "params": {
+        "n_estimators": 1200,
+        "max_depth": 5,
+        "learning_rate": 0.03766614899356853,
+        "min_child_weight": 1,
+        "colsample_bytree": 0.5914852440865064,
+        "subsample": 0.8948095495566332,
+        "reg_lambda": 0.1839231440599852
+      },
+      "val_macro_f1": 99.335,
+      "n_trials": 60
+    }
+  },
+  "CSTNET": {
+    "LightGBM(Boost)": {
+      "params": {
+        "n_estimators": 1200,
+        "num_leaves": 15,
+        "max_depth": 4,
+        "learning_rate": 0.023939915828702557,
+        "min_child_samples": 96,
+        "colsample_bytree": 0.7195075507342682,
+        "subsample": 0.8370665667831074,
+        "reg_lambda": 0.0010543020714711435
+      },
+      "val_macro_f1": 90.622,
+      "n_trials": 60
+    },
+    "XGBoost(Boost)": {
+      "params": {
+        "n_estimators": 1100,
+        "max_depth": 3,
+        "learning_rate": 0.03555399336483469,
+        "min_child_weight": 1,
+        "colsample_bytree": 0.7753640177873149,
+        "subsample": 0.908984239492303,
+        "reg_lambda": 0.31088969039092723
+      },
+      "val_macro_f1": 89.533,
+      "n_trials": 60
+    }
+  },
+  "LAB": {
+    "LightGBM(Boost)": {
+      "params": {
+        "n_estimators": 1200,
+        "num_leaves": 23,
+        "max_depth": 4,
+        "learning_rate": 0.010382084716623797,
+        "min_child_samples": 37,
+        "colsample_bytree": 0.5508101496461992,
+        "subsample": 0.8991915139378047,
+        "reg_lambda": 0.175455392223326
+      },
+      "val_macro_f1": 72.089,
+      "n_trials": 60
+    },
+    "XGBoost(Boost)": {
+      "params": {
+        "n_estimators": 800,
+        "max_depth": 12,
+        "learning_rate": 0.15062254738831785,
+        "min_child_weight": 1,
+        "colsample_bytree": 0.8507167486275914,
+        "subsample": 0.9291554320282265,
+        "reg_lambda": 19.56821791703125
+      },
+      "val_macro_f1": 73.018,
+      "n_trials": 60
+    }
+  }
+}
