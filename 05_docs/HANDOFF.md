@@ -1,103 +1,125 @@
-# HANDOFF — lab_dashboard_ver0.1 (2026-08-12 갱신)
+# HANDOFF — lab_dashboard / 01_MachineLearning (2026-08-20 갱신)
 
 다음 에이전트가 이 파일만 읽고 이어서 작업할 수 있도록 정리한 인수인계 문서.
-(이전 260805 버전을 대체. 그 이후 진행분 전부 반영)
+(이전 2026-08-13 버전 대체. 그 이후 "피처 정립" 세션 전부 반영.)
 
 ---
 
-## ★ 최신 갱신 (2026-08-13)
+## ★ 최신 갱신 (2026-08-20) — 피처 정립 세션
 
-- **저장소 대청소 + 폴더 재편**: 루트 40 → 8 (`01_code 02_dataset 03_json 04_logs 05_docs 06_data 07_app 99_trash_20260813`).
-  - 연구 데이터(seq789·canonical) → **`06_data/`**, 대시보드 런타임(models/static/tools) → **`07_app/`**.
-  - `01_code` 121 → **17개**(연구핵심·러너·대시보드만). 미사용 코드/데이터 → `99_trash_20260813/`(되돌리기 가능, 하드삭제 보류).
-  - 이동에 맞춰 유지 코드 경로 참조 일괄 갱신(러너 `$BASE/06_data/...`, app 3파일 `BASE_DIR/07_app/...`). 상세 = `STRUCTURE.md`.
-- **git 버전관리 시작**: `github.com/cole0213/LightGBM_Traffic_Classification` (origin/master, push 완료). `.gitignore`(대용량·런타임 제외)·`.gitattributes`(LF 강제). 코드 작업 후 `/commit`으로 커밋+push.
-- **PPT 재작업**: `심규상_260813_연구계획.pptx`(OneDrive) — STTabNet 제거, 클린 데이터셋만, BV 표에 전체지표(F1/Acc/bias/var/err/학습s/추론s/mem).
-- **⚠️ 예정 — 폴더 이름 변경**: `lab_dashboard_ver0.1` → **`01_MachineLearning`**. 유지 코드가 전부 상대경로라 **코드 수정 불필요**(문서·주석 이름만 갱신). **실행 중 LAB 튜닝 job의 작업 디렉터리라 job 완주 후 진행**(optuna sqlite 경로 재열림·SMB open-file 충돌 회피). optuna resume 가능이라 최악도 재실행 복구.
+- **피처 정립 완료**: seq789 → **정본 seq-core 299**(앞30패킷·6그룹) + **compact core N100/N60**. 근거 기반 압축(truncation·ablation·expand·select). 상세 = `05_docs/FEATURE_PLAN.md`, 시각요약 = artifact `claude.ai/code/artifact/1f58da13-f87a-444a-92d7-90082fd95f08`.
+- **인프라 모듈화**: 피처조립 `features.py`, 로드/라벨 `seqdata.py`, 측정 harness `feat_harness.py`. bias_variance/tune_boosting도 이 모듈 쓰게 리팩터(회귀테스트 통과, bit-exact).
+- **라벨 오염 정제**: Cipher `chacha20`(암호명이 도메인칸 오염, 1000행) 제외 → **42→41 도메인**. LAB `unknown`(라벨 없음 7989행) 제외. CSTNET 정상.
+- **정본 299 재튜닝 완료**: `03_json/boosting_best_params_core.json` (Cipher LGB 99.47/XGB 99.34, CSTNET 90.62/89.53, LAB 72.09/73.02, val macro-F1).
+- **[진행 중] 최종 full BV**: `run_bv_core.sh` — 3설정(299/N100/N60)×3데이터셋×5모델×B=15. 결과 `bias_variance_core_{299,N100,N60}.json`. → **이게 끝나면 피처정립 최종 성능표 완성.**
+- **문서·산출물**: PPT `심규상_260820_피처정립_실험결과.pptx`(OneDrive, 원본 260813 템플릿 위에 빌드=로고·양식 상속), 정제기준 규칙별 breakdown, 연구실 공용 시트(구글) 행 작성.
 
 ---
 
 ## 0. 환경 · 절대 규칙 (반드시 준수)
 
-- **로컬 PC(Windows)에서 학습/추출/heavy 연산 금지.** ML·pcap추출은 서버에서. (PPT용 python-pptx, 가벼운 데이터 조인/집계는 로컬 `C:\Python313\python.exe` 승인됨. soffice/pdftoppm은 로컬에 없음 → PPT 시각 QA 불가.)
+- **로컬 PC(Windows)에서 학습/heavy 추출 금지.** ML은 서버. (로컬 `C:\Python313\python.exe`는 PPT·가벼운 라벨집계·피처 회귀테스트 소량만. node+pptxgenjs는 scratchpad에 설치됨. soffice/pdftoppm 없음 → PPT 시각 QA 불가, python-pptx 구조검증만.)
 - **주 서버 = 17** `163.152.223.17` (root). 12코어·62GB·**RTX 3060 (VRAM 8GB)**. 사용자가 Xshell로 접속·실행.
-  - **에이전트 SSH 직접실행 차단** → 명령을 만들어 주고 **사용자가 Xshell에 붙여넣어 실행**.
-  - 에이전트는 `U:` 마운트로 서버 파일을 읽어 진행 확인(쓰기도 가능 — 코드 수정·파일 생성 함).
-  - **⚠️ `U:` 로그 읽기는 SMB 캐시로 지연될 수 있음**(옛 내용 보임). 진행상황은 서버 `tail`/`ps`가 정확. "멈춘 것 같다" 판단 전 서버에서 크로스체크.
-- **드라이브 매핑**: `U:`=서버17(프로젝트), `W:`=서버28(원본 pcap, `//163.152.223.28/RAID1`, nasuser/tpwhd.Wkd), `X:`=서버99(`//163.152.234.99/root`, root/tpwhd.Wkd, **공개데이터셋 data-8t + 노이즈 파이프라인 00_codes**), `Z:`=서버16(옵시디언 볼트), `Y:`=서버188.
-- 서버 프로젝트 경로: `/root/02_SGS/lab_dashboard_ver0.1`.
-- **무거운 CPU 작업 2개 동시 = 서로 굶김**(실제로 추출+LightGBM BV 동시 돌려 6시간 정지 사고). **순차 실행 원칙.** 병렬은 CPU작업 ∥ GPU작업처럼 자원이 다를 때만.
+  - **에이전트 SSH 직접실행 차단** → 명령을 만들어 주고 **사용자가 붙여넣어 실행**. 결과를 사용자가 붙여주면 확인.
+  - `U:` 마운트로 서버 파일 읽기/쓰기(코드 수정·파일 생성 가능).
+  - **⚠️ `U:` 로그·파일 읽기는 SMB 캐시로 지연**(옛 내용 보임). "멈췄다" 판단 전 **서버 `pgrep`/`ps`/`tail`로 크로스체크**(이번 세션에도 로그가 9시간 옛것 보여줘 오진할 뻔).
+- **무거운 CPU 작업 2개 동시 = 서로 굶김.** 순차 원칙. 병렬은 CPU작업 ∥ GPU작업(자원 다를 때)만 — 재튜닝은 LightGBM(CPU) ∥ XGBoost(GPU)로 동시 OK.
+- 드라이브: `U:`=서버17(프로젝트), `X:`=서버99(공개데이터셋 + 노이즈파이프라인 00_codes), `W:`=서버28(원본 pcap).
+- **git**: `github.com/cole0213/LightGBM_Traffic_Classification` (origin/master). 코드 후 `/commit`. SMB라 `git config --global --add safe.directory` 필요했음.
 
 ## 1. 프로젝트 목표
 
-**"암호화·정체성 은닉(TLS1.3·DoH·CDN·VPN·Tor) 환경에서도 정체성 피처(SNI·IP·5-tuple) 없이 패킷 행동(seq789)만으로 되는 보편 트래픽 분류기."** 최종 산출 = 논문/졸업작품, 보편성 증명.
+**정체성(SNI·IP·포트) 은닉(TLS1.3·DoH·CDN·VPN/Tor) 환경에서도 정체성 피처 없이 패킷 행동(seq)만으로 되는 보편 트래픽 분류기.** 환경·라벨공간·수집시점이 달라도 같은 방법으로 통함을 증명.
 
-- **★ STTabNet(딥 시퀀스모델) 폐기 (2026-08-11)**: 다중분류 붕괴 + ET-BERT 등 선행연구 존재 + tabular에선 트리가 딥 이김(Grinsztajn 2022). 코드/데이터는 남겨두되 진행 안 함.
-- **현재 주력 = 트리앙상블(LightGBM) on seq789 + 노이즈 정제 + 주차/데이터셋 일반화.**
-- seq789 = 순수 행동피처(크기·방향·IAT·window·retrans·payload + 통계·버스트·히스토그램·분위수). **SNI·IP·포트는 피처 아님, 라벨매칭·노이즈필터링에만 사용.**
+- 지도학습: **라벨 = 수집 때 정답출처**(LAB=OS 소켓 실측 프로세스, 도메인=통제수집 SNI). **모델 입력 = 행동 피처(seq)뿐** — SNI·IP·포트는 라벨링/노이즈필터에만, 피처 아님.
+- 주력 = **트리앙상블(LightGBM) on seq-core + 노이즈 정제 + 주차/데이터셋 일반화**. CatBoost 전면 제외(8GB GPU 다중클래스 OOM + 최하위).
+- 분류 유형: **Cipher=도메인, CSTNET=앱, PRISM(LAB)=프로세스**.
 
-## 2. 완료된 것 (성공)
+## 2. 피처 정립 — 완료 (이번 세션 핵심)
 
-1. **bias-variance 6모델×3 (통일 params, B=15)** → `03_json/bias_variance_results.json`. macro-F1: **LightGBM 최고**(Cipher 98.03 / CSTNET 88.89 / LAB 65.35). 단일→Bagging var 급감, Boosting bias·var 최저. CatBoost 최하(통일params 불리). 6모델=DT/RF/ET/LightGBM/XGBoost/CatBoost.
-2. **CatBoost 튜닝 회복**: Optuna로 Cipher 93.5→97.4 → "열세=params 탓" 검증. → `03_json/boosting_best_params.json`(현재 Cipher만).
-3. **추론속도 probe**: LightGBM predict가 XGBoost의 10배(leaf-wise 깊이 36% + predict 구현). depth6 캡하면 정확도 손해없이 1.5배↑. (`01_code/probe_lgbm_it.py`)
-4. **노이즈 정의 확립 ⭐**: X:\data-8t\00_codes\noise_rule 규칙(De=CDN/SNI, Cc=제어, Cd=배경, DoH)을 seq meta에서 직접 재현(`scratchpad/seqmeta_noise.py`). **prism04 04파일과 교차검증: LAB 30.3% 일치.** **데이터셋 성격별**: 도메인분류(Cipher/CSTNET)=De 제외(SNI=정답)→노이즈≈0(원본=클린), 프로세스분류(LAB)=De 포함→30%.
-5. **LAB week2 클린 BV** → `03_json/bias_variance_lab_pipeclean.json`. 노이즈(DNS/CDN 30%) 제거로 **macro-F1 +2.7~4.3, Acc +2.6~4.4, bias −3~5** 일관 상승. (5모델, CatBoost 제외)
-6. **week3 데이터(2026.07.20~24) 추출+클린 BV**: 서버28 Week3 pcap 2.43M flow 추출(에러1)→dedup 2.27M·123클래스. 클린 BV → `03_json/bias_variance_week3_pipeclean.json`(79클래스). **week2 vs week3: 모델 순위·"LightGBM 최고" 재현됨**(LightGBM 주차차 −0.76로 가장 안정). 절대값 차이는 대부분 클래스수(65 vs 79) 차이.
-7. **ISCX-VPN/Tor 추출**(에러0): `02_dataset/vpn2016_seq_100`(30.7만), `tor2016_seq_100`(4.4만). STTabNet용이었으나 폐기 — 데이터만 남음.
-8. **산출물**: Notion `0811_ML`(업무관리 DB), 옵시디언 볼트 이식(`.claude/commands/기록.md`·`정리.md` + `CLAUDE.md` + `_notes/`), 분석 아티팩트(bias-variance 상세).
+파이프라인: **789 → 299(앞30패킷 정본) → 100/60(compact core)**. 전부 전량 클린·단일split·가벼운 자(uniform LightGBM) 스크리닝. macro-F1.
 
-## 3. 실패 · 교훈 (반복 금지)
+| 단계 | 결정 | 근거 |
+|---|---|---|
+| 진단 importance | — | burst≈0(죽음), chan+cum 지배, 상위피처 앞20패킷 집중(중앙값 3번째) |
+| truncation | 앞 30패킷(K30, 789→299) | 무릎점. 손실 0, CSTNET/LAB은 오히려 상승(뒤 70패킷=노이즈). K15부터 붕괴 |
+| ablation | 6그룹 전부 유지(burst 포함) | burst 빼면 2/3 데이터셋 나빠짐(Cipher −0.03·CSTNET −0.21·LAB +0.05), 10피처뿐 → 유지 |
+| expand | 새 후보 6그룹(34피처) **미채택** | 전부 개선 0 이하 → chan/cum이 raw 담아 중복 = core 충족성 증거 |
+| select | compact = **N100**(희소보존) + N60(경량) | N40도 full과 거의 동일. LAB 희소클래스는 피처 많을수록 유리(중요도는 큰 클래스 지배) → N100 최고 |
 
-1. **STTabNet 다중분류 붕괴** — ISCX-VPN application macro-F1 11%(이진 encap만 65~94). 원인=pcap 수 부족(클래스당 1~4개)+pcap그룹분할이 클래스 굶김+극단불균형. → 폐기 결정.
-2. **CatBoost GPU OOM** — 8GB VRAM에서 다중클래스(CSTNET 120·LAB) OOM(border32·Plain으로도). Cipher(42)만 GPU 성공. → CatBoost 튜닝은 Cipher만, CSTNET/LAB은 CPU 초저속이라 사실상 스킵.
-3. **무거운 CPU 2개 동시 → 6시간 정지**. 순차 원칙.
-4. **class≥10 필터를 노이즈 제거 "전" 개수로 계산 → stratify 크래시**("least populated class has 1 member"). 노이즈 빼면 1개 남는 클래스 생김. **고침**: 제거 후 개수로 계산(`bias_variance.py`·`tune_boosting.py` 둘 다).
-5. **LAB seq ↔ prism04 filename 안 맞음** — 이름 체계 다름. → `(proto, 정렬 endpoints, ts_first)` **5-tuple+시각 조인 91% 매칭**으로 해결(`scratchpad/lab_join_noise.py`).
-6. **De 규칙을 도메인 데이터셋에 쓰면 정답 삭제** — Cipher에 De(google SNI) 적용시 google.com 클래스 통째로 사라짐(42→36). 도메인분류는 De 제외해야 함.
-7. **U: 로그 SMB 캐시 지연** — "멈췄다" 오진 2회. 서버 tail/ps로 확인.
+- **seq-core 299 구성**: flow(29 통계요약) + chan(150=앞30패킷×5채널) + cum(60) + hist(40) + quant(10) + burst(10). 앞100→30패킷만.
+- **compact core 선택**: 299 importance 3데이터셋 평균 통합랭킹 상위 N. 리스트 = `02_dataset/core100_features.txt`·`core60_features.txt`·`core_ranking.txt`.
+- **스크리닝 성능(가벼운 자)**: 789/299/N100/N60 전부 ±0.3 이내 동률. 789가 최고 아님(노이즈 포함). 압축 가치 = 스토리·배포효율·전이강건성(정확도 아님, 전이는 미검증).
 
-## 4. 진행 중 (2026-08-12 시작)
+## 3. 완료된 실험 (성공)
 
-**클린 데이터 부스팅 튜닝** — `01_code/run_tune_clean.sh`
+1. **부스팅 튜닝 완결**(789기준) → `boosting_best_params.json`. Cipher LGB 98.49·CSTNET 91.21·LAB 71.32(val).
+2. **튜닝반영 BV 클린**(789, B=15) → `bias_variance_tuned_results.json`. Cipher(42) LGB F1 98.59/Acc 99.06, CSTNET(120) 90.32/92.41, LAB(64,20만서브) LGB 69.08·XGB 70.04.
+3. **튜닝반영 BV 더티**(노이즈 미제거) → `bias_variance_tuned_dirty.json`. LAB 클린이 더티보다 F1 +2.6~3.4 → 노이즈 정제 가치 재확인.
+4. **노이즈 정본 = seqmeta 확정** (prism04 조인과 30.3% 일치 검증). 옛 pipeline(prism04, LAB 65클래스) 폐기(`_notes`·`02_dataset`에 [DEPRECATED] 마킹).
+5. **피처 정립 인프라 + 5개 분석**(importance/trunc/ablation/expand/select/coredump) → `03_json/feat_*.json`.
+6. **정본 299 재튜닝** → `boosting_best_params_core.json`.
+7. **정제 기준 규칙별 breakdown**(scratchpad/noise_breakdown.py): LAB week2 Cc-DNS(port53) 32.5% 압도적, week3 24.8%. SMB·broadcast·DoH·De 소수.
+8. **PPT·시트**: 실험결과 PPT(원본 템플릿 상속), 구글 공용시트용 4행(Cipher/CSTNET/PRISM w2·w3).
+
+### 클래스 수 참고 (전량 vs 20만 서브샘플)
+| PRISM | 전량(≥10) | 20만 서브(≥15) |
+|---|---|---|
+| week2 | **81** (603,556행) | **64** |
+| week3 | **120** (1,574,410행) | **79** |
+- Cipher 41(전량), CSTNET 120(전량). PRISM만 서브샘플 사용(전량은 B=15 BV엔 너무 큼).
+- 피처정립 스크리닝은 LAB **전량 81** 사용(단일split). B=15 BV는 **20만 서브 64/79**.
+
+## 4. 진행 중
+
+**최종 full BV** — `01_code/run_bv_core.sh`
 ```
-cd /root/02_SGS/lab_dashboard_ver0.1 && BASE=$(pwd) N_JOBS=11 TRIALS=60 nohup bash 01_code/run_tune_clean.sh > 04_logs/tune_clean.out 2>&1 & disown
+cd /root/02_SGS/01_MachineLearning && unset XGB_GPU CAT_GPU && BASE=$(pwd) N_JOBS=11 BV_B=15 nohup bash 01_code/run_bv_core.sh > 04_logs/bv_core.out 2>&1 & disown
 ```
-- 대상: **CSTNET(clean=원본, resume) + LAB week2 클린**(노이즈 제거, `LAB_NOISE_FILE=02_dataset/lab_seqmeta_noise_basenames.txt`, BV_SUB=200000).
-- LightGBM(CPU) ∥ XGBoost(GPU device=cuda). **CatBoost 제외**(GPU OOM). Cipher는 이미 완료.
-- 결과 `03_json/boosting_best_params.json` 병합. Optuna sqlite(`03_json/optuna_*.db`) resume.
-- 확인: `tail -f 04_logs/tune_clean.out`, 초반 `[LAB] 노이즈 ...제거 ...행`·`tune rows=... trials=60` 뜨면 정상.
+- 3설정(299=FEAT_TRUNC30 / N100=FEAT_SELECT core100 / N60=core60) × 3데이터셋 × 5모델 × B=15. core 튜닝값 사용.
+- **3설정 동일 데이터**(같은 서브샘플 seed·클래스≥15·split·부트스트랩) → 피처만 다름 = 통제비교.
+- 출력 `bias_variance_core_{299,N100,N60}.json`. ETA ~1.5~2일. 확인: `tail -f 04_logs/bv_core.out`, `설정 299 완료` 후 N100→N60.
 
 ## 5. 다음 단계 (우선순위)
 
-1. **클린 튜닝 완주** 대기 → **튜닝반영 BV 재실행**: `TUNED_PARAMS=03_json/boosting_best_params.json` 로 `bias_variance.py` 재실행(클린 데이터) → **"통일 params" vs "튜닝" 두 표** 비교. (`run_bv_tuned.sh` 참고, 노이즈·클린 반영 필요)
-2. **주차간 공통클래스 통제비교** — week2·week3 공통 앱만 골라 같은 클래스셋으로 → 재현성 순수 측정(현재 65 vs 79로 통제 안 됨). 가벼움.
-3. **교차 데이터셋 일반화** — 학습A→테스트B. 보편성 핵심 증거.
-4. **5-fold 평균±std** — 엄밀성. 클래스셋 고정.
-5. (선택) week3 튜닝, LAB 실앱전용(시스템프로세스 제외), 추론속도/메모리 배포 관점.
+1. **full BV 완주 대기** → PPT S8~10·S19를 **정본 299 실측 B=15 표**로 갱신 + compact(N100/N60) 표 추가. 구글시트 행도 299값으로 갱신. per-class F1도 확보.
+2. **[보류] LAB 희소클래스 진단** — confusion matrix로 ①데이터부족 ②불균형 ③행동중첩 구분. 실앱전용 서브셋 + open-set. (memory: `lab-rare-class-diagnosis`. 사용자가 "피처정립 끝나면"으로 보류시킴.)
+3. **논지 확장**: (A) **VPN/Tor 터널 통과**(데이터 보유: vpn2016_seq_100 30.7만·tor2016_seq_100 4.4만) — 정체성 완전은닉서 행동만으로=궁극 증명. (B) **open-set** 미지클래스 거부. (C) **교차전이 week2→week3**(공통클래스 `week_common_labels.txt` 준비됨). (D) 조기분류·5-fold±std.
+4. **저장소 정리**(FEATURE_PLAN §6): 01_code 하위폴더(01_core/02_extract/03_analysis/04_app/05_runners), 03_json 활성/archive, 02_dataset labels/noise/core, 로그 archive. **.py에 숫자접두사·공백·버전점 금지(import 깨짐).** run_bv_core 등 도는 job 끝난 뒤.
+5. (선택) week3 튜닝반영 BV(현재 통일params), 김지민 프로세스108/응용89와 조건 맞춰 대조.
 
-## 6. 핵심 파일 (기능·주요 env)
+## 6. 핵심 파일 · env
 
-- `01_code/bias_variance.py` — BV 분해. env: `ONLY`(모델 필터), `TUNED_PARAMS`(튜닝값 반영), `BV_SUB`(서브샘플), `BV_B`(부트스트랩), `XGB_GPU=1`(XGBoost GPU), `LAB_LABEL_MAP`(라벨맵, week3용), `LAB_NOISE_FILE`(LAB basename 노이즈제거), `NOISE_FILE`(비-LAB), `LAB_EXCLUDE_FILE`/`LAB_COLLAPSE_FILE`(라벨 제외/background 묶기). **class≥10은 노이즈 제거 후 개수 기준(버그 수정됨).**
-- `01_code/tune_boosting.py` — Optuna 튜닝. env: `XGB_GPU`, `CAT_GPU`, `ONLY`... `--models lightgbm,xgboost,catboost`, `--trials`. 노이즈필터 반영됨.
-- `01_code/extract_pcap_seq_sni_v2.py` — pcap→seq789. `--label-depth`, `--timeout`(대용량), `--cap-packets`(-c, 초대용량), truncated pcap 파싱분 유지, errors.log.
-- 러너: `run_tune_clean.sh`(클린튜닝), `run_week3_bv.sh`(week3 클린BV), `run_noise_bv.sh`(3데이터셋 노이즈BV), `run_bias_variance.sh`(원본BV).
-- 노이즈 목록: `02_dataset/lab_seqmeta_noise_basenames.txt`(week2), `week3_seqmeta_noise_basenames.txt`, `lab_pipeline_noise_basenames.txt`(prism04조인, week2와 동등). `week3_label.csv`(week3 라벨맵). `lab_canon_label.csv`(week2 라벨맵).
-- scratchpad(로컬): `seqmeta_noise.py`(노이즈목록 생성), `lab_join_noise.py`(prism04 5tuple조인), `noise_breakdown.py`(규칙별 집계), `0811_ML.md`, `bv_analysis.html`.
+- `01_code/features.py` — 피처빌더. `build_features(A,meta,groups,select)`. 그룹 레지스트리(기본6=seq789 + EXTRA6 미채택). 기본=bit-exact seq789.
+- `01_code/seqdata.py` — 로드+라벨링(bias_variance·tune·harness 공유). `load_labeled(seqdir,is_lab,domain_only,label_map,lab_noise_file,keep,exclude,collapse,noise_file,label_exclude)`.
+- `01_code/feat_harness.py` — 측정자. 모드 importance/ablation/expand/trunc/select/coredump/eval. env `HARNESS_LIGHT`(uniform 자)·`HARNESS_TRUNC`(공통K)·`HARNESS_LAB_SUB`.
+- `01_code/bias_variance.py` — BV. env `FEAT_TRUNC`(앞K=정본30)·`FEAT_GROUPS`·`FEAT_SELECT`(compact 이름리스트)·`TUNED_PARAMS`·`LAB_NOISE_FILE`·`LAB_LABEL_MAP`·`DOMAIN_EXCLUDE`(chacha20/unknown)·`ONLY`·`BV_SUB`·`BV_B`.
+- `01_code/tune_boosting.py` — Optuna. seqdata+build_features 씀. env `TUNE_TAG`(db 분리)·`XGB_GPU`·`FEAT_TRUNC` 등.
+- 러너: `run_tune_core.sh`(299 재튜닝), `run_bv_core.sh`(최종 BV 3설정), `run_bv_tuned.sh`(789 튜닝BV, 옛), `run_tune_clean.sh`(789 튜닝, 옛).
+- **세 피처설정 실행법**: 299=`FEAT_TRUNC=30` / N100=`FEAT_TRUNC=30 FEAT_SELECT=02_dataset/core100_features.txt` / N60=`...core60...`. (+ Cipher `DOMAIN_ONLY=1 DOMAIN_EXCLUDE=chacha20`, LAB `LAB_LABEL_MAP·LAB_NOISE_FILE·DOMAIN_EXCLUDE=unknown·BV_SUB=200000`.)
+- 노이즈/라벨: `02_dataset/lab_seqmeta_noise_basenames.txt`(week2 정본)·`week3_seqmeta_noise_basenames.txt`·`lab_canon_label.csv`(week2 라벨)·`week3_label.csv`. **옛 `lab_pipeline_noise_basenames.txt`(prism04, 폐기)**.
+- scratchpad(로컬, 커밋X): `noise_breakdown.py`(규칙별집계)·`class_count.py`·`gen_ppt2.py`(PPT생성)·`common_class.py`(주차공통라벨)·회귀테스트.
 
-## 7. 데이터셋 상태
+## 7. 실패·교훈 (반복 금지)
 
-| 데이터셋 | seq 경로 | flow | 클래스 | 노이즈(파이프라인) |
+1. **인라인 `BASE=$(pwd) python $BASE/...`** — 같은 줄 prefix 할당은 그 줄 인자 전개엔 미반영(빈값) → SEQDIR 깨짐. 상대경로나 `export BASE && ...`로.
+2. **LAB_LABEL_MAP 기본경로** — bias_variance 기본이 `SEQDIR.parent/02_dataset`인데 폴더 재편(06_data/) 후 깨짐(`06_data/02_dataset` 오참조 FileNotFoundError). 러너에서 명시 필요.
+3. **tune_boosting가 789 피처 자체복제** — 정본 299 재튜닝 위해 seqdata+build_features 쓰게 리팩터해야 했음.
+4. **optuna db 태그** — 피처셋 다르면 study 섞임 → `TUNE_TAG=_core`로 db 분리.
+5. **U: SMB 캐시** — 재튜닝 로그가 9시간 옛것 보여줘 "멈췄나" 오진. 서버 pgrep/ps로 확인하니 정상 진행 중이었음.
+6. **CatBoost GPU OOM**(8GB, 다중클래스) → 전면 제외. **LightGBM predict 느림**(다중클래스, XGBoost의 3~9배) — 추론=per-flow µs로 보고(저번 PPT 방식).
+7. **라벨 오염** — Cipher chacha20(암호명), LAB unknown. 새 데이터셋은 라벨 distinct 먼저 훑을 것.
+8. **STTabNet 폐기**(2026-08-11, 이전 세션) — 다중분류 붕괴. 트리앙상블이 tabular 우위.
+
+## 8. 데이터셋 상태 (클린)
+
+| 데이터셋 | seq 경로(06_data) | 분류 | 클래스 | 노이즈정제 |
 |---|---|---|---|---|
-| CipherSpectrum | `06_data/canonical_cipherspec_seq_v2` | 123,000 | 42(도메인) | ~0% (De=정답이라 제외) |
-| CSTNET(tls) | `06_data/canonical_cstnet_seq` | 46,372 | 120(도메인) | ~0% |
-| LAB week2 | `06_data/lab_full45_seq_v2_904k` | 146만→canon 87.9만 | 62~65(프로세스) | 30.3% (DNS/CDN/배경) |
-| LAB week3 | `06_data/lab_week3_seq_100` | 243만→dedup 227만 | 123→클린79 | 30.7% |
+| CipherSpectrum | canonical_cipherspec_seq_v2 | 도메인 | 41 | ≈0(De=정답, chacha20 제외) |
+| CSTNET | canonical_cstnet_seq | 앱 | 120 | ≈0 |
+| PRISM week2 | lab_full45_seq_v2_904k | 프로세스 | 81(전량)/64(20만) | seqmeta 30%+unknown |
+| PRISM week3 | lab_week3_seq_100 | 프로세스 | 120(전량)/79(20만) | seqmeta 30% |
+| VPN/Tor | vpn2016_seq_100·tor2016_seq_100 | (논지확장용) | — | 미사용, 보유 |
 
-- 노이즈 규칙별(LAB): **Cc_2 DNS(port53)가 압도적**(week2 28%·week3 23%), De google 2~3%, SMB, 브로드캐스트, DoH 0.3%.
-- 원본 pcap: week2/3 LAB=서버28 `//RAID1/00_DATASET/23_PRISM_week/2026.07/Week2·Week3`. VPN/Tor·CSTNET·Cipher=서버99 `X:\data-8t`.
-
-## 8. Notion / 옵시디언
-
-- Notion `업무관리` DB(data_source `36d53f02-dc31-8003-b735-000bec9d01a1`) 날짜별 페이지. `0811_ML` 생성됨(유형=연구실, 상태=진행중).
-- 옵시디언 볼트 = `_notes/`(서버17). `/기록`·`/정리` 명령 이식됨(`.claude/commands/`, `CLAUDE.md`). 허브=`_notes/02_SGS.md`. 07-29~08-11 기록 완료.
+- 전부 seq789(앞100패킷·789피처) 추출본. 정본 피처 = 이 위에서 앞30패킷·299.
+- 노이즈 규칙(seqmeta): De(CDN/SNI)·Cc(DNS·SMB·NTP·broadcast)·Cd(torrent·telemetry)·DoH. 도메인분류는 De 유지(SNI=정답)→노이즈≈0, 프로세스분류는 De 포함→30%.
